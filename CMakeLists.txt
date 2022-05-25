@@ -81,8 +81,10 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
-# Now simply link against gtest or gtest_main as needed. Eg
-enable_testing()
-add_executable(unitTests unitTests.cpp)
-target_link_libraries(unitTests gtest_main)
-add_test(NAME that-test-I-made COMMAND unitTests)
+#FetchContent_Declare(
+#        googletest
+#        URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
+#)
+#FetchContent_MakeAvailable(googletest)
+
+add_subdirectory(unitTests)
