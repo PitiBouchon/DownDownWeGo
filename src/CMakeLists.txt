@@ -2,7 +2,7 @@ file(GLOB SOURCES CONFIGURE_DEPENDS *.h *.cpp)
 
 add_executable(src ${SOURCES})
 
-target_link_libraries(src PUBLIC box2d sfml-graphics)
+target_link_libraries(src PUBLIC fmt box2d sfml-graphics)
 
 add_custom_target(copy-resources ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/resources)
 # "COMMAND ${CMAKE_COMMAND} -E copy_directory" triggers a generation error with Visual Studio
