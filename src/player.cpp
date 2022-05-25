@@ -1,12 +1,11 @@
 #include <stdio.h>
-#include <SFML/Graphics.hpp>
 #include <iostream>
 #include "player.h"
 
 using filePath = std::string;
 
-Player::Player(filePath image, int health, double baseSpeed, double xpos, double ypos) :
-     baseSpeed(baseSpeed), health(health), x_pos(xpos), y_pos(ypos)
+Player::Player(filePath image, int health, double baseSpeed, double xpos, double ypos, b2World *world) :
+     baseSpeed(baseSpeed), health(health)
 {
     idle = false;
     xSpeed = 0;
@@ -16,6 +15,31 @@ Player::Player(filePath image, int health, double baseSpeed, double xpos, double
     sprite.setTexture(texture);
     sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
     sprite.setScale(2, 2);
+
+    // Define the dynamic body. We set its position and call the body factory.
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(0.0f, 4.0f);
+    body = world->CreateBody(&bodyDef);
+
+    // Define another box shape for our dynamic body.
+    b2PolygonShape dynamicBox;
+    dynamicBox.SetAsBox(1.0f, 1.0f);
+
+    // Define the dynamic body fixture.
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &dynamicBox;
+
+    // Set the box density to be non-zero, so it will be dynamic.
+    fixtureDef.density = 1.0f;
+
+    // Override the default friction.
+    fixtureDef.friction = 0.3f;
+
+    // Add the shape to the body.
+    body->CreateFixture(&fixtureDef);
+
+    body->SetTransform(b2Vec2(xpos, ypos), 0.0f);
 }
 
 sf::Sprite Player::getSprite()
@@ -25,7 +49,8 @@ sf::Sprite Player::getSprite()
     else textureRect.left = 0;
 
     sprite.setTextureRect(textureRect);
-    sprite.setPosition(x_pos, y_pos);
+    b2Vec2 pos = body->GetPosition();
+    sprite.setPosition(pos.x, pos.y);
     return sprite;
 }
 
@@ -37,6 +62,6 @@ void Player::Move(sf::Event::KeyEvent key) {
 }
 
 void Player::UpdatePosition(double deltaTime) {
-    x_pos += xSpeed * deltaTime;
-    y_pos += ySpeed * deltaTime;
+    b2Vec2 pos = body->GetPosition();
+    body->SetTransform(b2Vec2(pos.x + xSpeed * deltaTime, pos.y + ySpeed * deltaTime), body->GetAngle());
 }
