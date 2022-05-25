@@ -22,9 +22,13 @@ jobs:
     - name: Adding build directory
       run: mkdir build
 
+    - name: Prepare the build
+      working-directory: ${{github.workspace}}/build
+      run: cmake --target unitTests ${{github.workspace}}
+    
     - name: Build
       working-directory: ${{github.workspace}}/build
-      run: cmake ${{github.workspace}}
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: Test
       working-directory: ${{github.workspace}}/build
