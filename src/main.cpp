@@ -60,7 +60,7 @@ int main()
 
 
     // ----- Player ----- //
-    Player player("./resources/Dude_Monster_Idle_4.png", 500, WINDOW_WIDTH/2, 0, &world);
+    Player player("./resources/player_spritesheet.png", 500, WINDOW_WIDTH/2, 0, &world);
 
 
     // ----- Clock ----- //

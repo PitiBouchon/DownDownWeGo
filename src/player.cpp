@@ -13,7 +13,7 @@ Player::Player(const filePath& image, float baseSpeed, float xpos, float ypos, b
     texture.loadFromFile(image);
     sprite.setTexture(texture);
     sprite.setTextureRect(sf::IntRect(0, 0, spriteSize, spriteSize));
-    sprite.setScale(2, 2);
+    sprite.setScale(4, 4);
 
     // Define the dynamic body. We set its position and call the body factory.
     b2BodyDef bodyDef;
@@ -55,9 +55,25 @@ sf::Sprite Player::getSprite()
 
 void Player::Move(sf::Event::KeyEvent key) {
 
-    if (key.code == sf::Keyboard::Right) xSpeed = baseSpeed;
-    else if (key.code == sf::Keyboard::Left) xSpeed = -baseSpeed;
-    else xSpeed = 0;
+    std::cout << key.code << std::endl;
+
+    if (key.code == sf::Keyboard::Right)
+    {
+        xSpeed = baseSpeed;
+        state = State::WALK;
+        dir = Direction::RIGHT;
+    }
+    else if (key.code == sf::Keyboard::Left)
+    {
+        xSpeed = -baseSpeed;
+        state = State::WALK;
+        dir = dir = Direction::LEFT;
+    }
+    else
+    {
+        xSpeed = 0;
+        state = State::IDLE;
+    }
 }
 
 void Player::UpdatePosition(float deltaTime) {
@@ -72,6 +88,6 @@ void Player::Animate(float deltaTime)
     {
         animationClock = 0;
         frame++;
-        if (frame >= totalFrames) frame = 0;
+        if (frame >= frames[(int) state]) frame = 0;
     }
 }

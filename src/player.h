@@ -16,9 +16,9 @@ private:
     float ySpeed = 0;
 
     int frame = 0;
-    int totalFrames = 4;
+    int frames[5] = { 4, 6, 4, 8, 8 };
 
-    float animationFrequency = 4;
+    float animationFrequency = 1;
     float animationClock = 0;
 
     State state = State::IDLE;
