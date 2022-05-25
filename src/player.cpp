@@ -4,16 +4,15 @@
 
 using filePath = std::string;
 
-Player::Player(filePath image, int health, double baseSpeed, double xpos, double ypos, b2World *world) :
-     baseSpeed(baseSpeed), health(health)
-{
-    idle = false;
-    xSpeed = 0;
-    ySpeed = 0;
+const int spriteSize = 32;
 
+Player::Player(const filePath& image, float baseSpeed, float xpos, float ypos, b2World *world) :
+     baseSpeed(baseSpeed)
+{
+    //Loading texture
     texture.loadFromFile(image);
     sprite.setTexture(texture);
-    sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
+    sprite.setTextureRect(sf::IntRect(0, 0, spriteSize, spriteSize));
     sprite.setScale(2, 2);
 
     // Define the dynamic body. We set its position and call the body factory.
@@ -32,21 +31,21 @@ Player::Player(filePath image, int health, double baseSpeed, double xpos, double
 
     // Set the box density to be non-zero, so it will be dynamic.
     fixtureDef.density = 1.0f;
-
-    // Override the default friction.
     fixtureDef.friction = 0.3f;
 
     // Add the shape to the body.
     body->CreateFixture(&fixtureDef);
-
     body->SetTransform(b2Vec2(xpos, ypos), 0.0f);
 }
 
 sf::Sprite Player::getSprite()
 {
-    sf::IntRect textureRect = sprite.getTextureRect();
-    if (idle) textureRect.left = 32;
-    else textureRect.left = 0;
+    auto textureRect = sf::IntRect(frame * spriteSize, (int) state * spriteSize, spriteSize, spriteSize);
+    if (dir == Direction::LEFT)
+    {
+        textureRect.left += spriteSize;
+        textureRect.width = -spriteSize;
+    }
 
     sprite.setTextureRect(textureRect);
     b2Vec2 pos = body->GetPosition();
@@ -61,7 +60,18 @@ void Player::Move(sf::Event::KeyEvent key) {
     else xSpeed = 0;
 }
 
-void Player::UpdatePosition(double deltaTime) {
+void Player::UpdatePosition(float deltaTime) {
     b2Vec2 pos = body->GetPosition();
     body->SetTransform(b2Vec2(pos.x + xSpeed * deltaTime, pos.y + ySpeed * deltaTime), body->GetAngle());
+}
+
+void Player::Animate(float deltaTime)
+{
+    animationClock += deltaTime;
+    if (animationClock >= 1/animationFrequency)
+    {
+        animationClock = 0;
+        frame++;
+        if (frame >= totalFrames) frame = 0;
+    }
 }

@@ -6,6 +6,7 @@
 
 #define WINDOW_WIDTH 720
 #define WINDOW_HEIGHT 720
+#define MAX_FPS 60
 
 using namespace std;
 using namespace sf;
@@ -14,9 +15,9 @@ int main()
 {
     // ----- Window ----- //
     RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "DownDownWeGo");
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(MAX_FPS);
 
-    //Text
+    // ----- Text ----- //
     sf::Font arial;
     arial.loadFromFile("resources/arial.ttf");
     
@@ -59,28 +60,30 @@ int main()
 
 
     // ----- Player ----- //
-    Player player("./resources/Dude_Monster_Idle_4.png", 20, 500, WINDOW_WIDTH / 2, 0, &world);
+    Player player("./resources/Dude_Monster_Idle_4.png", 500, WINDOW_WIDTH/2, 0, &world);
 
 
     // ----- Clock ----- //
     Clock clock;
-    double time = clock.getElapsedTime().asSeconds();
-    double oldtime;
-    double deltaTime;
+    float time = clock.getElapsedTime().asSeconds();
+    float oldtime;
+    float deltaTime;
 
-    // Prepare for simulation. Typically we use a time step of 1/60 of a
-    // second (60Hz) and 10 iterations. This provides a high quality simulation
-    // in most game scenarios.
-    float timeStep = 1.0f / 60.0f;
-    int32 velocityIterations = 6;
-    int32 positionIterations = 2;
+    // Prepare for simulation. Typically we use a time step of 60Hz and 10 iterations. 
+    // This provides a high quality simulation in most game scenarios.
+    float timeStep = 1.0f / MAX_FPS;
+    int32 velocityIterations = 10;
+    int32 positionIterations = 10;
 
     while (window.isOpen())
     {
+        // ----- Clock Management ----- //
         oldtime = time;
         time = clock.getElapsedTime().asSeconds();
         deltaTime = time - oldtime;
 
+
+        // ----- Event Management ----- //
 	    sf::Event event{};
 	    while (window.pollEvent(event))
         {
@@ -89,16 +92,19 @@ int main()
 
         world.Step(timeStep, velocityIterations, positionIterations);
 
+
+        // ----- Window Update ----- //
         window.clear();
-        
         window.draw(background);
 
+        //Player update
         player.Move(event.key);
         player.UpdatePosition(deltaTime);
+        player.Animate(deltaTime);
         window.draw(player.getSprite());
         
         //Framerate display
-        fps = std::min(60.0, 1/deltaTime);
+        fps = std::min((float) MAX_FPS, 1/deltaTime);
         framerate.setString("fps: " + format("{:.2f}", fps));
         window.draw(framerate);
 
