@@ -7,6 +7,8 @@ build
 cmake-build-debug
 
 
+Testing
+
 # User-specific files
 *.rsuser
 *.suo
