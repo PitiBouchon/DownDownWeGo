@@ -23,6 +23,7 @@ jobs:
       run: mkdir build
 
     - name: Build
+      working-directory: ${{github.workspace}}/build
       run: cmake ${{github.workspace}}
 
     - name: Test
