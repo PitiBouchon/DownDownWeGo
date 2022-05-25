@@ -1,5 +1,7 @@
 # Visual Studio
 build
+.vs
+
 # Clion
 .idea
 cmake-build-debug
