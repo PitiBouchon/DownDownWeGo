@@ -15,6 +15,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      run: sudo apt-get install libx11-dev libxrandr-dev libxi-dev libudev-dev mesa-common-dev libfreetype6-dev libopenal-dev libvorbis-dev libflac-dev
 
     - name: Adding build directory
       run: mkdir build
