@@ -12,8 +12,7 @@ private:
     sf::Sprite sprite;
 
     float baseSpeed;
-    float xSpeed = 0;
-    float ySpeed = 0;
+    float xInput = 0;
 
     int frame = 0;
     int totalFrames = 4;
@@ -28,9 +27,9 @@ private:
 
 public:
     Player(const std::string& image, float baseSpeed, float xpos, float ypos, b2World *world);
-    sf::Sprite getSprite();
+    sf::Sprite const & getSprite();
 
-    void Move(sf::Event::KeyEvent key);
-    void UpdatePosition(float deltaTime);
+    void KeyEvent(sf::Event::KeyEvent key, bool key_pressed);
+    void UpdateSpeed();
     void Animate(float deltaTime);
 };

@@ -38,7 +38,7 @@ Player::Player(const filePath& image, float baseSpeed, float xpos, float ypos, b
     body->SetTransform(b2Vec2(xpos, ypos), 0.0f);
 }
 
-sf::Sprite Player::getSprite()
+sf::Sprite const & Player::getSprite()
 {
     auto textureRect = sf::IntRect(frame * spriteSize, (int) state * spriteSize, spriteSize, spriteSize);
     if (dir == Direction::LEFT)
@@ -53,16 +53,15 @@ sf::Sprite Player::getSprite()
     return sprite;
 }
 
-void Player::Move(sf::Event::KeyEvent key) {
-
-    if (key.code == sf::Keyboard::Right) xSpeed = baseSpeed;
-    else if (key.code == sf::Keyboard::Left) xSpeed = -baseSpeed;
-    else xSpeed = 0;
+void Player::KeyEvent(sf::Event::KeyEvent key, bool keyPressed) {
+    int factor = keyPressed ? 1 : -1;
+    if (key.code == sf::Keyboard::Right) {xInput += factor;}
+    else if (key.code == sf::Keyboard::Left) {xInput -= factor;}
 }
 
-void Player::UpdatePosition(float deltaTime) {
-    b2Vec2 pos = body->GetPosition();
-    body->SetTransform(b2Vec2(pos.x + xSpeed * deltaTime, pos.y + ySpeed * deltaTime), body->GetAngle());
+void Player::UpdateSpeed() {
+    b2Vec2 vel = body->GetLinearVelocity();
+    body->SetLinearVelocity(b2Vec2(xInput * baseSpeed, vel.y));
 }
 
 void Player::Animate(float deltaTime)

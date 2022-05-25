@@ -16,6 +16,7 @@ int main()
     // ----- Window ----- //
     RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "DownDownWeGo");
     window.setFramerateLimit(MAX_FPS);
+    window.setKeyRepeatEnabled(false);
 
     // ----- Text ----- //
     sf::Font arial;
@@ -87,7 +88,17 @@ int main()
 	    sf::Event event{};
 	    while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed) window.close();
+            switch (event.type)
+            {
+                case sf::Event::Closed:
+                    window.close();
+                    break;
+                case sf::Event::KeyPressed: case sf::Event::KeyReleased:
+                    player.KeyEvent(event.key, event.type == sf::Event::KeyPressed);
+                    break;
+                default:
+                    break;
+            }
         }
 
         world.Step(timeStep, velocityIterations, positionIterations);
@@ -98,8 +109,7 @@ int main()
         window.draw(background);
 
         //Player update
-        player.Move(event.key);
-        player.UpdatePosition(deltaTime);
+        player.UpdateSpeed();
         player.Animate(deltaTime);
         window.draw(player.getSprite());
         
