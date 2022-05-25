@@ -24,7 +24,7 @@ jobs:
 
     - name: Prepare the build
       working-directory: ${{github.workspace}}/build
-      run: cmake --target unitTests ${{github.workspace}}
+      run: cmake ${{github.workspace}}
     
     - name: Build
       working-directory: ${{github.workspace}}/build
