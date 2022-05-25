@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <format>
 #include "player.h"
 
 #define WINDOW_WIDTH 720
@@ -10,7 +11,18 @@ using namespace sf;
 
 int main()
 {
+    //Window
     RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "DownDownWeGo");
+    window.setFramerateLimit(60);
+
+    //Text
+    sf::Font arial;
+    arial.loadFromFile("resources/arial.ttf");
+    
+    double fps;
+    Text framerate;
+    framerate.setFont(arial);
+    framerate.setFillColor(Color::Red);
 
     //Background
     Texture bgTexture;
@@ -18,7 +30,7 @@ int main()
     Sprite background(bgTexture);
 
     //Player
-    Player player("./resources/Dude_Monster_Idle_4.png", 20, 10000, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+    Player player("./resources/Dude_Monster_Idle_4.png", 20, 500, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 
     //Clock
     Clock clock;
@@ -35,9 +47,7 @@ int main()
 	    sf::Event event{};
 	    while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            }
+            if (event.type == sf::Event::Closed) window.close();
         }
 
         window.clear();
@@ -48,6 +58,11 @@ int main()
         player.UpdatePosition(deltaTime);
         window.draw(player.getSprite());
         
+        //Framerate display
+        fps = std::min(60.0, 1/deltaTime);
+        framerate.setString("fps: " + format("{:.2f}", fps));
+        window.draw(framerate);
+
         window.display();
     }
 
