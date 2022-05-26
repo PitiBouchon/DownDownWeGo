@@ -1,5 +1,6 @@
 #pragma once
 #include <stdio.h>
+#include <array>
 #include <SFML/Graphics.hpp>
 #include "box2d/box2d.h"
 
@@ -12,13 +13,10 @@ private:
     sf::Sprite sprite;
 
     float baseSpeed;
-    float xSpeed = 0;
-    float ySpeed = 0;
+    float xInput = 0;
 
     int frame = 0;
-    int frames[5] = { 4, 6, 4, 8, 8 };
-
-    float animationFrequency = 1;
+    std::array<int, 5> frames = { 4, 6, 4, 8, 8 };
     float animationClock = 0;
 
     State state = State::IDLE;
@@ -28,9 +26,9 @@ private:
 
 public:
     Player(const std::string& image, float baseSpeed, float xpos, float ypos, b2World *world);
-    sf::Sprite getSprite();
+    const sf::Sprite& getSprite();
 
-    void Move(sf::Event::KeyEvent key);
-    void UpdatePosition(float deltaTime);
+    void UpdateState(sf::Event event);
+    void UpdateSpeed();
     void Animate(float deltaTime);
 };

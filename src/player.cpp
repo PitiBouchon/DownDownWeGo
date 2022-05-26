@@ -13,7 +13,7 @@ Player::Player(const filePath& image, float baseSpeed, float xpos, float ypos, b
     texture.loadFromFile(image);
     sprite.setTexture(texture);
     sprite.setTextureRect(sf::IntRect(0, 0, spriteSize, spriteSize));
-    sprite.setScale(4, 4);
+    sprite.setScale(2, 2);
 
     // Define the dynamic body. We set its position and call the body factory.
     b2BodyDef bodyDef;
@@ -38,7 +38,7 @@ Player::Player(const filePath& image, float baseSpeed, float xpos, float ypos, b
     body->SetTransform(b2Vec2(xpos, ypos), 0.0f);
 }
 
-sf::Sprite Player::getSprite()
+const sf::Sprite & Player::getSprite()
 {
     auto textureRect = sf::IntRect(frame * spriteSize, (int) state * spriteSize, spriteSize, spriteSize);
     if (dir == Direction::LEFT)
@@ -53,38 +53,42 @@ sf::Sprite Player::getSprite()
     return sprite;
 }
 
-void Player::Move(sf::Event::KeyEvent key) {
+void Player::UpdateState(sf::Event event) {
 
-    std::cout << key.code << std::endl;
+    if (event.type == sf::Event::KeyPressed)
+    {
+        if (event.key.code == sf::Keyboard::Right)
+        {
+            xInput = 1;
+            dir = Direction::RIGHT;
+        }
+        else if (event.key.code == sf::Keyboard::Left)
+        {
+            xInput = -1;
+            dir = Direction::LEFT;
+        }
 
-    if (key.code == sf::Keyboard::Right)
-    {
-        xSpeed = baseSpeed;
-        state = State::WALK;
-        dir = Direction::RIGHT;
+        if (state == State::IDLE) state = State::WALK;
     }
-    else if (key.code == sf::Keyboard::Left)
+    else if (event.type == sf::Event::KeyReleased)
     {
-        xSpeed = -baseSpeed;
-        state = State::WALK;
-        dir = dir = Direction::LEFT;
-    }
-    else
-    {
-        xSpeed = 0;
-        state = State::IDLE;
+        if (state == State::WALK)
+        {
+            xInput = 0;
+            state = State::IDLE;
+        }
     }
 }
 
-void Player::UpdatePosition(float deltaTime) {
-    b2Vec2 pos = body->GetPosition();
-    body->SetTransform(b2Vec2(pos.x + xSpeed * deltaTime, pos.y + ySpeed * deltaTime), body->GetAngle());
+void Player::UpdateSpeed() {
+    b2Vec2 vel = body->GetLinearVelocity();
+    body->SetLinearVelocity(b2Vec2(xInput * baseSpeed, vel.y));
 }
 
 void Player::Animate(float deltaTime)
 {
     animationClock += deltaTime;
-    if (animationClock >= 1/animationFrequency)
+    if (animationClock >= 1.0/frames[(int) state])
     {
         animationClock = 0;
         frame++;

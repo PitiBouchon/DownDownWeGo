@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "box2d/box2d.h"
 #include <iostream>
-#include <format>
+#include <fmt/core.h>
 #include "player.h"
 
 #define WINDOW_WIDTH 720
@@ -16,6 +16,7 @@ int main()
     // ----- Window ----- //
     RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "DownDownWeGo");
     window.setFramerateLimit(MAX_FPS);
+    window.setKeyRepeatEnabled(false);
 
     // ----- Text ----- //
     sf::Font arial;
@@ -98,16 +99,15 @@ int main()
         window.draw(background);
 
         //Player update
-        player.Move(event.key);
-        player.UpdatePosition(deltaTime);
+        player.UpdateState(event);
+        player.UpdateSpeed();
         player.Animate(deltaTime);
         window.draw(player.getSprite());
         
         //Framerate display
         fps = std::min((float) MAX_FPS, 1/deltaTime);
-        framerate.setString("fps: " + format("{:.2f}", fps));
+        framerate.setString("fps: " + fmt::format("{:.2f}", fps));
         window.draw(framerate);
-
         window.display();
     }
 

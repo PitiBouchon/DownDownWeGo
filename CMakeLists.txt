@@ -35,6 +35,12 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(box2d)
 
+FetchContent_Declare(fmt
+        GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+        GIT_TAG master
+)
+FetchContent_MakeAvailable(fmt)
+
 add_subdirectory(src)
 
 ###################################################################################################
@@ -80,6 +86,8 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
 if (CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include")
 endif()
+
+include(CTest)
 
 #FetchContent_Declare(
 #        googletest
