@@ -4,6 +4,7 @@
 #include <fmt/core.h>
 #include "player.h"
 #include "camera.h"
+#include "myContactListener.h"
 
 #define WINDOW_WIDTH 720
 #define WINDOW_HEIGHT 720
@@ -42,6 +43,9 @@ int main()
 //
 //    // Construct a world object, which will hold and simulate the rigid bodies.
     b2World world(gravity);
+
+    MyContactListener listener;
+    world.SetContactListener(&listener);
 //
 //    // Define the ground body.
 //    b2BodyDef groundBodyDef;
@@ -70,6 +74,11 @@ int main()
     // ----- Player ----- //
     Player player("./resources/player_spritesheet.png", 17, WINDOW_WIDTH/2, 0, &world);
 
+//    Texture blockTexture2;
+//    blockTexture2.loadFromFile("./resources/block.png");
+//    Sprite block2(blockTexture2);
+//    block2.setPosition(WINDOW_WIDTH / 2 + 40, WINDOW_HEIGHT / 2 - 200);
+//    Rigidbody rb2(&world, b2_dynamicBody, block2);
 
     // ----- Clock ----- //
     Clock clock;
@@ -129,7 +138,7 @@ int main()
         player.Animate(deltaTime);
         window.draw(player.getSprite());
         window.draw(block);
-        
+
         // Framerate display
         fps = std::min((float) MAX_FPS, 1/deltaTime);
         framerate.setString("fps: " + fmt::format("{:.2f}", fps));

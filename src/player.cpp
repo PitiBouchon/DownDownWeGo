@@ -9,14 +9,33 @@ const int spriteSize = 32;
 Player::Player(const filePath& image, float baseSpeed, float xpos, float ypos, b2World *world) :
      baseSpeed(baseSpeed)
 {
-    //Loading texture
+    // Loading texture
     texture.loadFromFile(image);
     sprite.setTexture(texture);
     sprite.setTextureRect(sf::IntRect(0, 0, spriteSize, spriteSize));
     sprite.setScale(2, 2);
     sprite.setPosition(xpos, ypos);
     rb = Rigidbody(world, b2_dynamicBody, sprite);
+    rb.setCollisionDetection(this);
 }
+
+//void Player::BeginContact(b2Contact *contact)
+//{
+//    if (contact->GetFixtureA()->GetBody() == &rb.getBody() || contact->GetFixtureB()->GetBody() == &rb.getBody())
+//    {
+//        b2Vec2 normal = contact->GetManifold()->localNormal;
+//        std::cout << "Player collision normal : " << normal.x << "," << normal.y << std::endl;
+//        if (abs(normal.y) > 0.001)
+//        {
+//            std::cout << "Colliding on ground" << std::endl;
+//            onGround = true;
+//        }
+//    }
+//    else
+//    {
+//        std::cout << "Colliding with other thing ?" << std::endl;
+//    }
+//}
 
 const sf::Sprite & Player::getSprite()
 {
@@ -75,5 +94,13 @@ void Player::Animate(float deltaTime)
         animationClock = 0;
         frame++;
         if (frame >= frames[(int) state]) frame = 0;
+    }
+}
+
+void Player::BeginCollision(b2Contact *contact)
+{
+    if (contact->GetManifold()->localNormal.y < 0)
+    {
+        onGround = true;
     }
 }

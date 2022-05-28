@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "box2d/box2d.h"
+#include "collisionDetection.h"
 
 const float PHYSICS_GRAPHICS_SCALE = 30.0f; // 1m = 30 pixels
 
@@ -14,9 +15,10 @@ public:
     Rigidbody(b2World *world, b2BodyType type, sf::Sprite image);
     Rigidbody(b2World *world, b2BodyType type, b2PolygonShape shape, sf::Vector2f pixelPos);
     const sf::Vector2f getPixelPos();
-    const b2Vec2 getPhysicPos();
-    const b2Vec2 getVelocity();
+    const b2Vec2 &getPhysicPos();
+    const b2Vec2 &getVelocity();
     void setVelocity(const b2Vec2 &vel);
+    void setCollisionDetection(CollisionDetection *cd);
 };
 
 

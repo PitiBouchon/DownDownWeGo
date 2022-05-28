@@ -1,15 +1,16 @@
+#include <iostream>
 #include "rigidbody.h"
 
 extern const float PHYSICS_GRAPHICS_SCALE;
 
 b2Vec2 toPhysicsPos(sf::Vector2f pixelPos)
 {
-    return b2Vec2(pixelPos.x / PHYSICS_GRAPHICS_SCALE, pixelPos.y / PHYSICS_GRAPHICS_SCALE);
+    return {pixelPos.x / PHYSICS_GRAPHICS_SCALE, pixelPos.y / PHYSICS_GRAPHICS_SCALE};
 }
 
 sf::Vector2f toPixelPos(b2Vec2 physicPos)
 {
-    return sf::Vector2f(physicPos.x * PHYSICS_GRAPHICS_SCALE, physicPos.y * PHYSICS_GRAPHICS_SCALE);
+    return {physicPos.x * PHYSICS_GRAPHICS_SCALE, physicPos.y * PHYSICS_GRAPHICS_SCALE};
 }
 
 Rigidbody::Rigidbody(b2World *world, b2BodyType type, b2PolygonShape shape, sf::Vector2f pixelPos)
@@ -27,6 +28,8 @@ Rigidbody::Rigidbody(b2World *world, b2BodyType type, b2PolygonShape shape, sf::
 
     body->CreateFixture(&fixtureDef);
     body->SetTransform(toPhysicsPos(pixelPos), 0.0f);
+
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(nullptr);
 }
 
 Rigidbody::Rigidbody(b2World *world, b2BodyType type, sf::Sprite image)
@@ -48,15 +51,9 @@ Rigidbody::Rigidbody(b2World *world, b2BodyType type, sf::Sprite image)
 
     body->CreateFixture(&fixtureDef);
     body->SetTransform(toPhysicsPos(image.getPosition()), 0.0f);
-}
 
-//Rigidbody::Rigidbody(b2World *world, b2BodyType type, b2PolygonShape shape, sf::Vector2f pixelPos)
-//{
-//    b2BodyDef bodyDef;
-//    bodyDef.type = type;
-//
-//    Rigidbody(world, bodyDef, shape, pixelPos);
-//}
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(nullptr);
+}
 
 const sf::Vector2f Rigidbody::getPixelPos()
 {
@@ -64,12 +61,12 @@ const sf::Vector2f Rigidbody::getPixelPos()
     return sf::Vector2f(pos.x * PHYSICS_GRAPHICS_SCALE, pos.y * PHYSICS_GRAPHICS_SCALE);
 }
 
-const b2Vec2 Rigidbody::getPhysicPos()
+const b2Vec2 &Rigidbody::getPhysicPos()
 {
     return body->GetPosition();
 }
 
-const b2Vec2 Rigidbody::getVelocity()
+const b2Vec2 &Rigidbody::getVelocity()
 {
     return body->GetLinearVelocity();
 }
@@ -77,4 +74,9 @@ const b2Vec2 Rigidbody::getVelocity()
 void Rigidbody::setVelocity(const b2Vec2 &vel)
 {
     body->SetLinearVelocity(vel);
+}
+
+void Rigidbody::setCollisionDetection(CollisionDetection *cd)
+{
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(cd);
 }
