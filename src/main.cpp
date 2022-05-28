@@ -73,12 +73,13 @@ int main()
 
     // ----- Player ----- //
     Player player("./resources/player_spritesheet.png", 17, WINDOW_WIDTH/2, 0, &world);
+//    Player player("./resources/block.png", 17, WINDOW_WIDTH/2, 0, &world);
 
-//    Texture blockTexture2;
-//    blockTexture2.loadFromFile("./resources/block.png");
-//    Sprite block2(blockTexture2);
-//    block2.setPosition(WINDOW_WIDTH / 2 + 40, WINDOW_HEIGHT / 2 - 200);
-//    Rigidbody rb2(&world, b2_dynamicBody, block2);
+    Texture blockTexture2;
+    blockTexture2.loadFromFile("./resources/block.png");
+    Sprite block2(blockTexture2);
+    block2.setPosition(WINDOW_WIDTH / 2 + 25, WINDOW_HEIGHT / 2 - 200);
+    Rigidbody rb2(&world, b2_dynamicBody, block2);
 
     // ----- Clock ----- //
     Clock clock;
@@ -137,7 +138,10 @@ int main()
         player.UpdateSpeed();
         player.Animate(deltaTime);
         window.draw(player.getSprite());
+        block.setPosition(rb.getPixelPos());
         window.draw(block);
+        block2.setPosition(rb2.getPixelPos());
+        window.draw(block2);
 
         // Framerate display
         fps = std::min((float) MAX_FPS, 1/deltaTime);

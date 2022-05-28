@@ -6,8 +6,7 @@ using filePath = std::string;
 
 const int spriteSize = 32;
 
-Player::Player(const filePath& image, float baseSpeed, float xpos, float ypos, b2World *world) :
-     baseSpeed(baseSpeed)
+Player::Player(const filePath& image, float baseSpeed, float xpos, float ypos, b2World *world) : baseSpeed(baseSpeed)
 {
     // Loading texture
     texture.loadFromFile(image);
@@ -18,24 +17,6 @@ Player::Player(const filePath& image, float baseSpeed, float xpos, float ypos, b
     rb = Rigidbody(world, b2_dynamicBody, sprite);
     rb.setCollisionDetection(this);
 }
-
-//void Player::BeginContact(b2Contact *contact)
-//{
-//    if (contact->GetFixtureA()->GetBody() == &rb.getBody() || contact->GetFixtureB()->GetBody() == &rb.getBody())
-//    {
-//        b2Vec2 normal = contact->GetManifold()->localNormal;
-//        std::cout << "Player collision normal : " << normal.x << "," << normal.y << std::endl;
-//        if (abs(normal.y) > 0.001)
-//        {
-//            std::cout << "Colliding on ground" << std::endl;
-//            onGround = true;
-//        }
-//    }
-//    else
-//    {
-//        std::cout << "Colliding with other thing ?" << std::endl;
-//    }
-//}
 
 const sf::Sprite & Player::getSprite()
 {
@@ -49,6 +30,7 @@ const sf::Sprite & Player::getSprite()
     sprite.setTextureRect(textureRect);
     sf::Vector2f pos = rb.getPixelPos();
     sprite.setPosition(pos.x, pos.y);
+    sprite.setRotation(rb.getAngle());
     return sprite;
 }
 

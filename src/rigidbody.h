@@ -5,11 +5,10 @@
 #include "box2d/box2d.h"
 #include "collisionDetection.h"
 
-const float PHYSICS_GRAPHICS_SCALE = 30.0f; // 1m = 30 pixels
-
 class Rigidbody {
 private:
     b2Body* body{};
+    b2Vec2 offset = {0, 0};
 public:
     Rigidbody() = default;
     Rigidbody(b2World *world, b2BodyType type, sf::Sprite image);
@@ -19,6 +18,7 @@ public:
     const b2Vec2 &getVelocity();
     void setVelocity(const b2Vec2 &vel);
     void setCollisionDetection(CollisionDetection *cd);
+    float getAngle();
 };
 
 
