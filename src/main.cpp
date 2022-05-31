@@ -89,6 +89,7 @@ int main()
 	    while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed) window.close();
+            player.UpdateState(event);
         }
 
         world.Step(timeStep, velocityIterations, positionIterations);
@@ -99,7 +100,6 @@ int main()
         window.draw(background);
 
         //Player update
-        player.UpdateState(event);
         player.UpdateSpeed();
         player.Animate(deltaTime);
         window.draw(player.getSprite());

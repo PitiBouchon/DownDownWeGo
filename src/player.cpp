@@ -75,6 +75,7 @@ void Player::UpdateState(sf::Event event) {
         if (state == State::WALK)
         {
             xInput = 0;
+            frame = 0;
             state = State::IDLE;
         }
     }
