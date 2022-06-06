@@ -2,11 +2,11 @@
 #include <iostream>
 #include "player.h"
 
-using filePath = std::string;
 
+using filePath = std::string;
 const int spriteSize = 32;
 
-Player::Player(const filePath& image, float baseSpeed, float xpos, float ypos, b2World *world) : baseSpeed(baseSpeed)
+Player::Player(float xpos, float ypos, float baseSpeed, b2World *world, const filePath& image) : baseSpeed(baseSpeed)
 {
     // Loading texture
     texture.loadFromFile(image);
@@ -14,6 +14,14 @@ Player::Player(const filePath& image, float baseSpeed, float xpos, float ypos, b
     sprite.setTextureRect(sf::IntRect(0, 0, spriteSize, spriteSize));
     sprite.setScale(2, 2);
     sprite.setPosition(xpos, ypos);
+
+    //Setting default inputs
+    inputsMap[sf::Keyboard::Left] = Command::LEFT;
+    inputsMap[sf::Keyboard::Right] = Command::RIGHT;
+    inputsMap[sf::Keyboard::Up] = Command::JUMP;
+    inputsMap[sf::Keyboard::Space] = Command::GRAB;
+
+    //Creating rigidbody
     rb = Rigidbody(world, b2_dynamicBody, sprite);
     rb.setCollisionDetection(this);
 }
@@ -34,55 +42,115 @@ const sf::Sprite & Player::getSprite()
     return sprite;
 }
 
-void Player::UpdateState(sf::Event event) {
-    // Get the xInput (-1 : Left, 0 : Nothing, 1 : Right)
-    int factor = event.type == sf::Event::KeyPressed ? 1 : -1;
-    if (event.key.code == sf::Keyboard::Right)
-    {
-        xInput += factor;
-    }
-    else if (event.key.code == sf::Keyboard::Left)
-    {
-        xInput -= factor;
-    }
-
-    // Update Direction and State
-    if (xInput > 0)
-    {
-        dir = Direction::RIGHT;
-        if (state == State::IDLE) state = State::WALK;
-    }
-    else if (xInput < 0)
-    {
-        dir = Direction::LEFT;
-        if (state == State::IDLE) state = State::WALK;
-    }
-    else if (state == State::WALK)
-    {
-        state = State::IDLE;
-    }
-}
-
-void Player::UpdateSpeed() {
-    b2Vec2 vel = rb.getVelocity();
-    rb.setVelocity(b2Vec2((float) xInput * baseSpeed, vel.y));
-}
-
 void Player::Animate(float deltaTime)
 {
     animationClock += deltaTime;
-    if (animationClock >= 1.0/frames[(int) state])
+    if (animationClock >= 1.0 / frames[(int)state])
     {
         animationClock = 0;
         frame++;
-        if (frame >= frames[(int) state]) frame = 0;
+        if (frame >= frames[(int)state]) frame = 0;
     }
 }
 
-void Player::BeginCollision(b2Contact *contact)
+void Player::ChangeState(States newState)
 {
-    if (contact->GetManifold()->localNormal.y < 0)
+    frame = 0;
+    state = newState;
+
+    switch (state) {
+    case States::IDLE: std::cout << "IDLE\n"; break;
+    case States::WALK: std::cout << "WALK\n"; break;
+    case States::CLIMB: std::cout << "CLIMB\n"; break;
+    case States::JUMP: std::cout << "JUMP\n"; break;
+    case States::FALL: std::cout << "FALL\n"; break;
+    default: std::cout << "ERROR\n"; break;
+    }
+}
+
+void Player::RefillEndurance() {
+    endurance = maxEndurance;
+}
+
+void Player::Exhaust(float value) {
+    endurance -= value;
+}
+
+bool Player::HasEndurance() const {
+    return (endurance > 0);
+}
+
+
+void Player::HandleInput(sf::Event event)
+{
+    if (!inputsMap.contains(event.key.code)) return;
+    Command command = inputsMap[event.key.code];
+
+    if (event.type == sf::Event::KeyPressed) HandleKeyPressed(command);
+    if (event.type == sf::Event::KeyReleased) HandleKeyReleased(command);
+}
+
+void Player::HandleKeyPressed(Command command)
+{
+    if (command == Command::RIGHT)
+    {
+        xInput = 1;
+        dir = Direction::RIGHT;
+        if (state == States::IDLE) ChangeState(States::WALK);
+    }
+    else if (command == Command::LEFT)
+    {
+        xInput = -1;
+        dir = Direction::LEFT;
+        if (state == States::IDLE) ChangeState(States::WALK);
+    }
+    else if (command == Command::JUMP && onGround)
+    {
+        onGround = false;
+        ChangeState(States::JUMP);
+    }
+    else if (command == Command::GRAB)
     {
         onGround = true;
+        ChangeState(States::CLIMB);
+    }
+}
+
+void Player::HandleKeyReleased(Command command)
+{
+    if (command == Command::RIGHT || command == Command::LEFT)
+    {
+        xInput = 0;
+        if (state == States::WALK) ChangeState(States::IDLE);
+    }
+    else if (command == Command::GRAB)
+    {
+        ChangeState(States::FALL);
+    }
+}
+
+
+void Player::Update()
+{
+    b2Vec2 b2Velocity = rb.getVelocity();
+    if (state == States::CLIMB)
+    {
+        rb.setVelocity(b2Vec2(0, b2Velocity.y));
+    }
+    else
+    {
+        rb.setVelocity(b2Vec2(xInput * baseSpeed, b2Velocity.y));
+        if (b2Velocity.y > 0 && state != States::FALL) ChangeState(States::FALL);
+    }
+}
+
+
+void Player::BeginCollision(b2Contact *contact)
+{
+    if (contact->GetManifold()->localNormal.y <= 0)
+    {
+        onGround = true;
+        if (xInput == 0) ChangeState(States::IDLE);
+        else ChangeState(States::WALK);
     }
 }

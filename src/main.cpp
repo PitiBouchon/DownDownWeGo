@@ -8,21 +8,24 @@
 #include "camera.h"
 #include "myContactListener.h"
 
-#define WINDOW_WIDTH 720
-#define WINDOW_HEIGHT 720
-#define MAX_FPS 60
+constexpr auto WINDOW_WIDTH = 720;
+constexpr auto WINDOW_HEIGHT = 720;
+constexpr auto MAX_FPS = 60;
+
+const auto displayFPS = true;
 
 using namespace std;
 using namespace sf;
 
 int main()
 {
-    // ----- Window ----- //
+    // ----- Window & Camera ----- //
     RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "DownDownWeGo");
     window.setFramerateLimit(MAX_FPS);
     window.setKeyRepeatEnabled(false);
 
     Camera camera(&window);
+
 
     // ----- Text ----- //
     sf::Font arial;
@@ -33,39 +36,23 @@ int main()
     framerate.setFont(arial);
     framerate.setFillColor(Color::Red);
 
+
     // ----- Background ----- //
     Texture bgTexture;
     bgTexture.loadFromFile("./resources/cave_bg.png");
     Sprite background(bgTexture);
     background.setScale(WINDOW_WIDTH / background.getLocalBounds().width, WINDOW_HEIGHT / background.getLocalBounds().height);
 
+
     // ----- Physics ----- //
-//    // Define the gravity vector.
+    // Define the gravity vector.
     b2Vec2 gravity(0.0f, 10.0f);
-//
-//    // Construct a world object, which will hold and simulate the rigid bodies.
+
+    // Construct a world object, which will hold and simulate the rigid bodies.
     b2World world(gravity);
 
     MyContactListener listener;
     world.SetContactListener(&listener);
-//
-//    // Define the ground body.
-//    b2BodyDef groundBodyDef;
-//    groundBodyDef.position.Set(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-//
-//    // Call the body factory which allocates memory for the ground body
-//    // from a pool and creates the ground box shape (also from a pool).
-//    // The body is also added to the world.
-//    b2Body* groundBody = world.CreateBody(&groundBodyDef);
-//
-//    // Define the ground box shape.
-//    b2PolygonShape groundBox;
-//
-//    // The extents are the half-widths of the box.
-//    groundBox.SetAsBox(50.0f, 10.0f);
-//
-//    // Add the ground fixture to the ground body.
-//    groundBody->CreateFixture(&groundBox, 0.0f);
 
     Texture blockTexture;
     blockTexture.loadFromFile("./resources/block.png");
@@ -73,15 +60,17 @@ int main()
     block.setPosition(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
     Rigidbody rb(&world, b2_kinematicBody, block);
 
+
     // ----- Player ----- //
-    Player player("./resources/player_spritesheet.png", 17, WINDOW_WIDTH/2, 0, &world);
-//    Player player("./resources/block.png", 17, WINDOW_WIDTH/2, 0, &world);
+    Player player(WINDOW_WIDTH/2, 0, 5, &world, "./resources/player_spritesheet.png");
+
 
     Texture blockTexture2;
     blockTexture2.loadFromFile("./resources/block.png");
     Sprite block2(blockTexture2);
     block2.setPosition(WINDOW_WIDTH / 2 + 25, WINDOW_HEIGHT / 2 - 200);
     Rigidbody rb2(&world, b2_dynamicBody, block2);
+
 
     // ----- Clock ----- //
     Clock clock;
@@ -112,8 +101,12 @@ int main()
                 case sf::Event::Closed:
                     window.close();
                     break;
-                case sf::Event::KeyPressed: case sf::Event::KeyReleased:
-                    player.UpdateState(event);
+                case sf::Event::KeyPressed:
+                case sf::Event::KeyReleased:
+                    
+                    player.HandleInput(event);
+                    
+                    //For debug purposes
                     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z)
                     {
                         camera.move(sf::Vector2f(0, -20));
@@ -137,19 +130,24 @@ int main()
         window.draw(background);
 
         // Player update
-        player.UpdateSpeed();
+        player.Update();
         player.Animate(deltaTime);
         window.draw(player.getSprite());
+        
+        //Blocks
         block.setPosition(rb.getPixelPos());
         window.draw(block);
         block2.setPosition(rb2.getPixelPos());
         window.draw(block2);
 
         // Framerate display
-        fps = std::min((float) MAX_FPS, 1/deltaTime);
-        framerate.setString("fps: " + fmt::format("{:.2f}", fps));
-        window.draw(framerate);
-        window.display();
+        if (displayFPS)
+        {
+            fps = std::min((float)MAX_FPS, 1 / deltaTime);
+            framerate.setString("fps: " + fmt::format("{:.2f}", fps));
+            window.draw(framerate);
+            window.display();
+        }
     }
 
     return 0;
