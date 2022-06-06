@@ -3,10 +3,12 @@
 #include <iostream>
 #include <fmt/core.h>
 #include <tmxlite/Map.hpp>
-#include "SFMLOrthogonalLayer.h"
+#include "Tile/SFMLOrthogonalLayer.h"
 #include "player.h"
 #include "camera.h"
 #include "myContactListener.h"
+#include "Tile/myTilemap.h"
+#include "Tile/tilemapManager.h"
 
 #define WINDOW_WIDTH 720
 #define WINDOW_HEIGHT 720
@@ -17,12 +19,31 @@ using namespace sf;
 
 int main()
 {
+
+    tmx::Map map;
+    map.load("/mnt/c/Users/Pierre/Documents/TSP/2A/DevCpp/DownDownWeGo/resources/maps/map1.tmx");
+
+    // ----- Physics ----- //
+    // Define the gravity vector.
+    // TODO : Valeur codée à la main
+    b2Vec2 gravity(0.0f, 100.0f);
+
+    // Construct a world object, which will hold and simulate the rigid bodies.
+    b2World world(gravity);
+
+    MyContactListener listener;
+    world.SetContactListener(&listener);
+
+    TilemapManager tilemapManager("/mnt/c/Users/Pierre/Documents/TSP/2A/DevCpp/DownDownWeGo/resources/maps/", &world);
+
     // ----- Window ----- //
-    RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "DownDownWeGo");
+    RenderWindow window(VideoMode(map.getBounds().width, map.getBounds().height), "DownDownWeGo");
     window.setFramerateLimit(MAX_FPS);
     window.setKeyRepeatEnabled(false);
-
     Camera camera(&window);
+    window.setView(camera.getView());
+    camera.view.setSize(map.getBounds().width, map.getBounds().height);
+    camera.view.setCenter(map.getBounds().width / 2 , map.getBounds().height / 2);
 
     // ----- Text ----- //
     sf::Font arial;
@@ -39,49 +60,14 @@ int main()
     Sprite background(bgTexture);
     background.setScale(WINDOW_WIDTH / background.getLocalBounds().width, WINDOW_HEIGHT / background.getLocalBounds().height);
 
-    // ----- Physics ----- //
-//    // Define the gravity vector.
-    b2Vec2 gravity(0.0f, 10.0f);
-//
-//    // Construct a world object, which will hold and simulate the rigid bodies.
-    b2World world(gravity);
-
-    MyContactListener listener;
-    world.SetContactListener(&listener);
-//
-//    // Define the ground body.
-//    b2BodyDef groundBodyDef;
-//    groundBodyDef.position.Set(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-//
-//    // Call the body factory which allocates memory for the ground body
-//    // from a pool and creates the ground box shape (also from a pool).
-//    // The body is also added to the world.
-//    b2Body* groundBody = world.CreateBody(&groundBodyDef);
-//
-//    // Define the ground box shape.
-//    b2PolygonShape groundBox;
-//
-//    // The extents are the half-widths of the box.
-//    groundBox.SetAsBox(50.0f, 10.0f);
-//
-//    // Add the ground fixture to the ground body.
-//    groundBody->CreateFixture(&groundBox, 0.0f);
-
-    Texture blockTexture;
-    blockTexture.loadFromFile("./resources/block.png");
-    Sprite block(blockTexture);
-    block.setPosition(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-    Rigidbody rb(&world, b2_kinematicBody, block);
+//    Texture blockTexture;
+//    blockTexture.loadFromFile("./resources/block.png");
+//    Sprite block(blockTexture);
+//    block.setPosition(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+//    Rigidbody rb(&world, b2_kinematicBody, block);
 
     // ----- Player ----- //
-    Player player("./resources/player_spritesheet.png", 17, WINDOW_WIDTH/2, 0, &world);
-//    Player player("./resources/block.png", 17, WINDOW_WIDTH/2, 0, &world);
-
-    Texture blockTexture2;
-    blockTexture2.loadFromFile("./resources/block.png");
-    Sprite block2(blockTexture2);
-    block2.setPosition(WINDOW_WIDTH / 2 + 25, WINDOW_HEIGHT / 2 - 200);
-    Rigidbody rb2(&world, b2_dynamicBody, block2);
+    Player player("./resources/player_spritesheet.png", 17, WINDOW_WIDTH / 2 - 40, 0, &world);
 
     // ----- Clock ----- //
     Clock clock;
@@ -112,15 +98,20 @@ int main()
                 case sf::Event::Closed:
                     window.close();
                     break;
+//                case sf::Event::Resized:
+//                    std::cout << "New size : " << window.getSize().x << ";" << window.getSize().x << std::endl;
+//                    if (window.getSize().x % 16 != 0)
+//                    {
+//                        window.setSize(Vector2u(16 * (int) (window.getSize().x / 16), 16 * (int) (window.getSize().y / 16)));
+//                    }
+//                    camera.view.setSize(map.getBounds().width, map.getBounds().height);
+//                    camera.view.setCenter(map.getBounds().width / 2 , map.getBounds().height / 2);
+                    break;
                 case sf::Event::KeyPressed: case sf::Event::KeyReleased:
                     player.UpdateState(event);
-                    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z)
+                    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
                     {
-                        camera.move(sf::Vector2f(0, -20));
-                    }
-                    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::S)
-                    {
-                        camera.move(sf::Vector2f(0, 20));
+                        player.Jump();
                     }
                     break;
                 default:
@@ -129,25 +120,29 @@ int main()
         }
 
         world.Step(timeStep, velocityIterations, positionIterations);
-
+        sf::Time duration = clock.getElapsedTime();
 
         // ----- Window Update ----- //
         window.clear();
         window.setView(camera.getView());
-        window.draw(background);
+        camera.moveTo(sf::Vector2f(camera.getPosition().x, player.getSprite().getPosition().y + 60));
+//        window.draw(background);
 
         // Player update
         player.UpdateSpeed();
         player.Animate(deltaTime);
+//        block.setPosition(rb.getPixelPos());
+
+        tilemapManager.update(camera);
+        window.draw(tilemapManager);
+
+//        window.draw(block);
+
         window.draw(player.getSprite());
-        block.setPosition(rb.getPixelPos());
-        window.draw(block);
-        block2.setPosition(rb2.getPixelPos());
-        window.draw(block2);
 
         // Framerate display
         fps = std::min((float) MAX_FPS, 1/deltaTime);
-        framerate.setString("fps: " + fmt::format("{:.2f}", fps));
+        framerate.setString("fps: " + fmt::format("{:.0f}", fps));
         window.draw(framerate);
         window.display();
     }

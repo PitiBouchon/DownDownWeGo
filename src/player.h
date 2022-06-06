@@ -34,4 +34,6 @@ public:
     void UpdateSpeed();
     void Animate(float deltaTime);
     void BeginCollision(b2Contact *contact) override;
+
+    void Jump();
 };

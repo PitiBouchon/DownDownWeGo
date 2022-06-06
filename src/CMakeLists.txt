@@ -1,4 +1,4 @@
-file(GLOB SOURCES CONFIGURE_DEPENDS *.h *.cpp)
+file(GLOB SOURCES CONFIGURE_DEPENDS *.h *.cpp Tile/*.h Tile/*.cpp)
 
 add_executable(src ${SOURCES})
 
@@ -15,3 +15,5 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/resources
                            ${RESOURCES}
                            ${CMAKE_CURRENT_BINARY_DIR}/resources)
 add_dependencies(src copy-resources)
+
+target_include_directories(src PUBLIC Tile)

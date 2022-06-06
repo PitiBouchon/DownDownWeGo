@@ -39,16 +39,45 @@ FetchContent_Declare(fmt
 FetchContent_MakeAvailable(fmt)
 
 # Add tmxlite
-FetchContent_Declare(
-        tmxlite
-        GIT_REPOSITORY https://github.com/fallahn/tmxlite
-        GIT_TAG        v1.2.1
-)
-FetchContent_MakeAvailable(tmxlite)
-add_subdirectory(${tmxlite_SOURCE_DIR}/tmxlite)
-set(TMXLITE_LIBRARIES tmxlite)
-set(TMXLITE_INCLUDE_DIR ${tmxlite_SOURCE_DIR}/tmxlite/include)
-include_directories(${TMXLITE_INCLUDE_DIR} ${SFML_INCLUDE_DIR})
+set (TMXLITE_STATIC_LIB TRUE)
+if (WIN32)
+  configure_file(CMakeLists_tmxlite.txt.in tmxlite-download/tmxlite/CMakeLists.txt)
+  message(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . RESULT_VARIABLE result WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tmxlite-download/tmxlite)
+  execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+          RESULT_VARIABLE result
+          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tmxlite-download/tmxlite )
+  if(result)
+    message(FATAL_ERROR1 "CMake step for tmxlite failed: ${result}")
+  endif()
+  execute_process(COMMAND ${CMAKE_COMMAND} --build .
+          RESULT_VARIABLE result
+          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tmxlite-download/tmxlite )
+  if(result)
+    message(FATAL_ERROR2 "Build step for tmxlite failed: ${result}")
+  endif()
+
+  add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/tmxlite-src/tmxlite
+          ${CMAKE_CURRENT_BINARY_DIR}/tmxlite-build/tmxlite
+          EXCLUDE_FROM_ALL)
+  include_directories("${CMAKE_CURRENT_BINARY_DIR}/tmxlite-src/tmxlite/include")
+else()
+  FetchContent_Declare(
+          tmxlite
+          GIT_REPOSITORY https://github.com/fallahn/tmxlite
+          GIT_TAG        v1.2.1
+  )
+  FetchContent_MakeAvailable(tmxlite)
+
+  add_subdirectory(${tmxlite_SOURCE_DIR}/tmxlite)
+  set(TMXLITE_LIBRARIES tmxlite)
+  set(TMXLITE_INCLUDE_DIR ${tmxlite_SOURCE_DIR}/tmxlite/include)
+  include_directories(${TMXLITE_INCLUDE_DIR} ${SFML_INCLUDE_DIR})
+endif()
+
+#add_subdirectory(${tmxlite_SOURCE_DIR}/tmxlite)
+#set(TMXLITE_LIBRARIES tmxlite)
+#set(TMXLITE_INCLUDE_DIR ${tmxlite_SOURCE_DIR}/tmxlite/include)
+#include_directories(${TMXLITE_INCLUDE_DIR} ${SFML_INCLUDE_DIR})
 
 add_subdirectory(src)
 

@@ -7,10 +7,13 @@
 class Camera {
 private:
     // https://www.sfml-dev.org/tutorials/2.5/graphics-view.php for more information
-    sf::View view;
 public:
+    sf::View view;
     Camera(sf::RenderWindow *window);
     void move(sf::Vector2f dir);
+    void moveTo(sf::Vector2f pos);
+    sf::Vector2f const &getPosition() const;
+    sf::Vector2f const &getSize() const;
     const sf::View & getView();
 };
 

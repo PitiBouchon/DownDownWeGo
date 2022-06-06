@@ -66,6 +66,10 @@ void Player::UpdateState(sf::Event event) {
 void Player::UpdateSpeed() {
     b2Vec2 vel = rb.getVelocity();
     rb.setVelocity(b2Vec2((float) xInput * baseSpeed, vel.y));
+    if (vel.y == 0)
+    {
+        onGround = true;
+    }
 }
 
 void Player::Animate(float deltaTime)
@@ -83,6 +87,21 @@ void Player::BeginCollision(b2Contact *contact)
 {
     if (contact->GetManifold()->localNormal.y < 0)
     {
+        if (rb.getVelocity().y > 20)
+        {
+            // Die here
+//            printf("PLAYER IS DEAD ! (player.cpp)\n");
+        }
         onGround = true;
+    }
+}
+
+void Player::Jump()
+{
+    if (onGround)
+    {
+        // TODO : Valeur codée à la main
+        rb.addImpulse(b2Vec2(0, -100.0f));
+        onGround = false;
     }
 }
