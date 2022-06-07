@@ -10,11 +10,11 @@
 class TilemapManager : public sf::Drawable {
 private:
     std::array<MyTilemap, 5> displayed_map;
-    int index_map_to_change;
+    int index_map_to_change = 0;
     std::vector<std::string> paths;
     b2World *world;
 public:
-    TilemapManager(std::string maps_path, b2World *world);
+    TilemapManager(const std::string& maps_path, b2World *world);
     void draw(sf::RenderTarget& rt, sf::RenderStates states) const override;
     void update(const Camera &camera);
 };

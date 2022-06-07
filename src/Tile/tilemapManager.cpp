@@ -1,8 +1,8 @@
 #include "tilemapManager.h"
 #include <string>
 
-TilemapManager::TilemapManager(std::string maps_path, b2World *world) {
-    this->world = world;
+TilemapManager::TilemapManager(const std::string & maps_path, b2World *world) : world(world)
+{
     for (const auto & entry : std::filesystem::directory_iterator(maps_path))
     {
         std::string path = entry.path().string();
@@ -15,7 +15,7 @@ TilemapManager::TilemapManager(std::string maps_path, b2World *world) {
         tmx::Map map;
         
         std::streambuf* orig_buf = std::cout.rdbuf();
-        std::cout.rdbuf(NULL); //Removes Logs
+        std::cout.rdbuf(nullptr); //Removes Logs
 
         map.load(path);
         
@@ -24,29 +24,27 @@ TilemapManager::TilemapManager(std::string maps_path, b2World *world) {
 
         if (i != 0)
         {
-            sf::Vector2f offset = sf::Vector2f(0, displayed_map[i-1].getBounds().top + displayed_map[i-1].getBounds().height);
+            auto offset = sf::Vector2f(0, displayed_map[i-1].getBounds().top + displayed_map[i-1].getBounds().height);
             displayed_map[i] = MyTilemap(map, world, offset);
         }
         else
         {
             displayed_map[i] = MyTilemap(map, world, sf::Vector2f(0, 0));
         }
-
-        index_map_to_change = 0;
     }
 }
 
 void TilemapManager::draw(sf::RenderTarget &rt, sf::RenderStates states) const
 {
-    for (int i = 0; i < displayed_map.size(); ++i)
+    for (const auto& map : displayed_map)
     {
-        displayed_map[i].draw(rt, states);
+        map.draw(rt, states);
     }
 }
 
 void TilemapManager::update(const Camera &camera)
 {
-    MyTilemap *mt = const_cast<MyTilemap *>(&displayed_map[index_map_to_change]);
+    auto *mt = &displayed_map[index_map_to_change];
 
     if (mt->getBounds().top + mt->getBounds().height < camera.getPosition().y - camera.getSize().y)
     {
@@ -54,7 +52,7 @@ void TilemapManager::update(const Camera &camera)
         tmx::Map map;
         
         std::streambuf* orig_buf = std::cout.rdbuf();
-        std::cout.rdbuf(NULL);
+        std::cout.rdbuf(nullptr);
         map.load(path);
         std::cout.rdbuf(orig_buf);
 
