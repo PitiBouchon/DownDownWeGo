@@ -1,9 +1,7 @@
 #include <iostream>
 #include "rigidbody.h"
 
-//extern const float PHYSICS_GRAPHICS_SCALE;
-
-const float PHYSICS_GRAPHICS_SCALE = 30.0f; // 1m = 30 pixels
+//const float PHYSICS_GRAPHICS_SCALE = 30.0f; // 1m = 30 pixels
 
 float toPhysic(float v)
 {
@@ -15,7 +13,7 @@ float toPixel(float v)
     return v * PHYSICS_GRAPHICS_SCALE;
 }
 
-Rigidbody::Rigidbody(b2World *world, b2BodyType type, b2PolygonShape shape, sf::Vector2f pixelPos)
+Rigidbody::Rigidbody(b2World *world, b2BodyType type, const b2Shape *shape, sf::Vector2f pixelPos)
 {
     b2BodyDef bodyDef;
     bodyDef.type = type;
@@ -23,7 +21,7 @@ Rigidbody::Rigidbody(b2World *world, b2BodyType type, b2PolygonShape shape, sf::
     body = world->CreateBody(&bodyDef);
 
     b2FixtureDef fixtureDef;
-    fixtureDef.shape = &shape;
+    fixtureDef.shape = shape;
 
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.0f;
@@ -63,7 +61,7 @@ const sf::Vector2f Rigidbody::getPixelPos()
     return sf::Vector2f(toPixel(pos.x), toPixel(pos.y));
 }
 
-const b2Vec2 &Rigidbody::getPhysicPos()
+const b2Vec2 Rigidbody::getPhysicPos()
 {
     return body->GetPosition() + offset;
 }
@@ -86,4 +84,9 @@ void Rigidbody::setCollisionDetection(CollisionDetection *cd)
 float Rigidbody::getAngle()
 {
     return body->GetAngle();
+}
+
+void Rigidbody::addImpulse(b2Vec2 impulse)
+{
+    body->ApplyLinearImpulseToCenter(impulse, true);
 }

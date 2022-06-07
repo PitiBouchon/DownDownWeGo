@@ -3,28 +3,53 @@
 #include <iostream>
 #include <fmt/core.h>
 #include <tmxlite/Map.hpp>
-#include "SFMLOrthogonalLayer.h"
+#include "Tile/SFMLOrthogonalLayer.h"
 #include "player.h"
 #include "camera.h"
 #include "myContactListener.h"
+#include "Tile/myTilemap.h"
+#include "Tile/tilemapManager.h"
 
+// ----- GLOBAL PARAMETERS ----- //
 constexpr auto WINDOW_WIDTH = 720;
 constexpr auto WINDOW_HEIGHT = 720;
 constexpr auto MAX_FPS = 60;
 
+constexpr auto GRAVITY = 100;
+
 const auto displayFPS = true;
 
+// ------ Used Namespaces ----- //
 using namespace std;
 using namespace sf;
 
+
 int main()
 {
+    // ----- Physics ----- //
+    b2Vec2 gravity(0.0f, GRAVITY); // Define the gravity vector.
+    b2World world(gravity); // Construct a world object, which will hold and simulate the rigid bodies.
+
+    MyContactListener listener;
+    world.SetContactListener(&listener);
+
+    TilemapManager tilemapManager("./resources/maps/", &world);
+
+
+    // ----- Map ----- //
+    tmx::Map map;
+    map.load("./resources/maps/map1.tmx");
+
+
     // ----- Window & Camera ----- //
-    RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "DownDownWeGo");
+    RenderWindow window(VideoMode(map.getBounds().width, map.getBounds().height), "Down Down We Go");
     window.setFramerateLimit(MAX_FPS);
     window.setKeyRepeatEnabled(false);
-
+    
     Camera camera(&window);
+    window.setView(camera.getView());
+    camera.view.setSize(map.getBounds().width, map.getBounds().height);
+    camera.view.setCenter(map.getBounds().width / 2 , map.getBounds().height / 2);
 
 
     // ----- Text ----- //
@@ -34,42 +59,18 @@ int main()
     double fps;
     Text framerate;
     framerate.setFont(arial);
+    framerate.setCharacterSize(18);
     framerate.setFillColor(Color::Red);
 
 
     // ----- Background ----- //
     Texture bgTexture;
-    bgTexture.loadFromFile("./resources/cave_bg.png");
+    bgTexture.loadFromFile("resources/cave_bg.png");
     Sprite background(bgTexture);
     background.setScale(WINDOW_WIDTH / background.getLocalBounds().width, WINDOW_HEIGHT / background.getLocalBounds().height);
 
-
-    // ----- Physics ----- //
-    // Define the gravity vector.
-    b2Vec2 gravity(0.0f, 10.0f);
-
-    // Construct a world object, which will hold and simulate the rigid bodies.
-    b2World world(gravity);
-
-    MyContactListener listener;
-    world.SetContactListener(&listener);
-
-    Texture blockTexture;
-    blockTexture.loadFromFile("./resources/block.png");
-    Sprite block(blockTexture);
-    block.setPosition(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-    Rigidbody rb(&world, b2_kinematicBody, block);
-
-
     // ----- Player ----- //
-    Player player(WINDOW_WIDTH/2, 0, 5, &world, "./resources/player_spritesheet.png");
-
-
-    Texture blockTexture2;
-    blockTexture2.loadFromFile("./resources/block.png");
-    Sprite block2(blockTexture2);
-    block2.setPosition(WINDOW_WIDTH / 2 + 25, WINDOW_HEIGHT / 2 - 200);
-    Rigidbody rb2(&world, b2_dynamicBody, block2);
+    Player player(WINDOW_WIDTH/2, 1, &world, "resources/player_spritesheet.png");
 
 
     // ----- Clock ----- //
@@ -103,42 +104,29 @@ int main()
                     break;
                 case sf::Event::KeyPressed:
                 case sf::Event::KeyReleased:
-                    
                     player.HandleInput(event);
-                    
-                    //For debug purposes
-                    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Z)
-                    {
-                        camera.move(sf::Vector2f(0, -20));
-                    }
-                    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::S)
-                    {
-                        camera.move(sf::Vector2f(0, 20));
-                    }
                     break;
+
                 default:
                     break;
             }
         }
 
         world.Step(timeStep, velocityIterations, positionIterations);
-
+        sf::Time duration = clock.getElapsedTime();
 
         // ----- Window Update ----- //
         window.clear();
         window.setView(camera.getView());
-        window.draw(background);
+        camera.moveTo(sf::Vector2f(camera.getPosition().x, player.getSprite().getPosition().y + 60));
 
-        // Player update
         player.Update();
         player.Animate(deltaTime);
-        window.draw(player.getSprite());
+        tilemapManager.update(camera);
         
-        //Blocks
-        block.setPosition(rb.getPixelPos());
-        window.draw(block);
-        block2.setPosition(rb2.getPixelPos());
-        window.draw(block2);
+        window.draw(background);
+        window.draw(tilemapManager);
+        window.draw(player.getSprite());
 
         // Framerate display
         if (displayFPS)

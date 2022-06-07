@@ -31,16 +31,17 @@ are implemented.
 #ifndef SFML_ORTHO_HPP_
 #define SFML_ORTHO_HPP_
 
-#include <tmxlite/Map.hpp>
-#include <tmxlite/TileLayer.hpp>
-#include <tmxlite/detail/Log.hpp>
+#include "tmxlite/Map.hpp"
+#include "tmxlite/TileLayer.hpp"
+#include "tmxlite/detail/Log.hpp"
 
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/RenderStates.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/Vertex.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Transformable.hpp>
+#include "SFML/Graphics/Drawable.hpp"
+#include "SFML/Graphics/RenderStates.hpp"
+#include "SFML/Graphics/RenderTarget.hpp"
+#include "SFML/Graphics/Vertex.hpp"
+#include "SFML/Graphics/Texture.hpp"
+#include "SFML/Graphics/Transformable.hpp"
+#include "SFML/Graphics.hpp"
 
 #include <memory>
 #include <vector>
@@ -55,7 +56,21 @@ are implemented.
 class MapLayer final : public sf::Drawable
 {
 public:
+    sf::FloatRect getBounds()
+    {
+        return m_globalBounds;
+    }
 
+    void addOffset(sf::Vector2f offset)
+    {
+        m_globalBounds.left += offset.x;
+        m_globalBounds.top += offset.y;
+        for (auto &c : m_chunks)
+        {
+            auto pos = c->getPosition();
+            c->setPosition(pos + offset);
+        }
+    }
 
     MapLayer(const tmx::Map& map, std::size_t idx)
     {
@@ -157,7 +172,7 @@ private:
             sf::Color vertColour = sf::Color(200, 200, 200, layerOpacity);
             auto offset = layer.getOffset();
             layerOffset.x = offset.x;
-            layerOffset.x = offset.y;
+            layerOffset.y = offset.y;
             chunkTileCount.x = tileCount.x;
             chunkTileCount.y = tileCount.y;
             mapTileSize = tileSize;
@@ -546,10 +561,15 @@ private:
         sf::Vector2f viewCorner = view.getCenter();
         viewCorner -= view.getSize() / 2.f;
 
-        int posX = static_cast<int>(std::floor(viewCorner.x / m_chunkSize.x));
-        int posY = static_cast<int>(std::floor(viewCorner.y / m_chunkSize.y));
-        int posX2 = static_cast<int>(std::ceil((viewCorner.x + view.getSize().x) / m_chunkSize.x));
-        int posY2 = static_cast<int>(std::ceil((viewCorner.y + view.getSize().x) / m_chunkSize.y));
+//        int posX = static_cast<int>(std::floor(viewCorner.x / m_chunkSize.x));
+//        int posY = static_cast<int>(std::floor(viewCorner.y / m_chunkSize.y));
+//        int posX2 = static_cast<int>(std::ceil((viewCorner.x + view.getSize().x) / m_chunkSize.x));
+//        int posY2 = static_cast<int>(std::ceil((viewCorner.y + view.getSize().y) / m_chunkSize.y));
+
+        int posX = 0; //static_cast<int>(std::floor(viewCorner.x / m_chunkSize.x));
+        int posY = 0; //static_cast<int>(std::floor(viewCorner.y / m_chunkSize.y));
+        int posX2 = m_chunkCount.x; //static_cast<int>(std::ceil((viewCorner.x + view.getSize().x) / m_chunkSize.x));
+        int posY2 = m_chunkCount.y; //static_cast<int>(std::ceil((viewCorner.y + view.getSize().y) / m_chunkSize.y));
 
         std::vector<Chunk*> visible;
         for (auto y = posY; y < posY2; ++y)
@@ -563,6 +583,11 @@ private:
                 }
             }
         }
+
+//        for (auto &c : visible)
+//        {
+//            c->setPosition(sf::Vector2f(m_globalBounds.left, m_globalBounds.top));
+//        }
 
         std::swap(m_visibleChunks, visible);
     }

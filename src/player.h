@@ -22,10 +22,12 @@ private:
     std::array<int, 5> frames = { 4, 6, 4, 8, 8 };
     float animationClock = 0;
 
-    float maxEndurance = 20;
+    const float maxEndurance = 20;
     float endurance = maxEndurance;
 
-    float baseSpeed;
+    const float LETHAL_SPEED = 20;
+    float baseSpeed = 5;
+
     float xInput = 0;
     bool onGround = false;
 
@@ -37,7 +39,7 @@ private:
     std::map<sf::Keyboard::Key, Command> inputsMap;
 
 public:
-    Player(float xpos, float ypos, float baseSpeed, b2World *world, const std::string& image);
+    Player(float xpos, float ypos, b2World *world, const std::string& image);
     
     const sf::Sprite& getSprite();
     void Animate(float deltaTime);
@@ -46,6 +48,8 @@ public:
     void RefillEndurance();
     void Exhaust(float value);
     bool HasEndurance() const;
+
+    void Jump();
 
     void HandleInput(sf::Event event);
     void HandleKeyPressed(Command command);

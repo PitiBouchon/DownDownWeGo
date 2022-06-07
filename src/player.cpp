@@ -6,7 +6,7 @@
 using filePath = std::string;
 const int spriteSize = 32;
 
-Player::Player(float xpos, float ypos, float baseSpeed, b2World *world, const filePath& image) : baseSpeed(baseSpeed)
+Player::Player(float xpos, float ypos, b2World *world, const filePath& image)
 {
     // Loading texture
     texture.loadFromFile(image);
@@ -55,6 +55,8 @@ void Player::Animate(float deltaTime)
 
 void Player::ChangeState(States newState)
 {
+    if (newState == state) return;
+
     frame = 0;
     state = newState;
 
@@ -81,6 +83,18 @@ bool Player::HasEndurance() const {
 }
 
 
+void Player::Jump()
+{
+    if (onGround)
+    {
+        // TODO : Valeur codée à la main
+        rb.addImpulse(b2Vec2(0, -100.0f));
+        onGround = false;
+        ChangeState(States::JUMP);
+    }
+}
+
+
 void Player::HandleInput(sf::Event event)
 {
     if (!inputsMap.contains(event.key.code)) return;
@@ -104,10 +118,9 @@ void Player::HandleKeyPressed(Command command)
         dir = Direction::LEFT;
         if (state == States::IDLE) ChangeState(States::WALK);
     }
-    else if (command == Command::JUMP && onGround)
+    else if (command == Command::JUMP)
     {
-        onGround = false;
-        ChangeState(States::JUMP);
+        Jump();
     }
     else if (command == Command::GRAB)
     {
@@ -140,7 +153,6 @@ void Player::Update()
     else
     {
         rb.setVelocity(b2Vec2(xInput * baseSpeed, b2Velocity.y));
-        if (b2Velocity.y > 0 && state != States::FALL) ChangeState(States::FALL);
     }
 }
 
@@ -149,8 +161,16 @@ void Player::BeginCollision(b2Contact *contact)
 {
     if (contact->GetManifold()->localNormal.y <= 0)
     {
+        if (rb.getVelocity().y > LETHAL_SPEED)
+        {
+            // Die here
+            printf("PLAYER IS DEAD !\n");
+        }
+
         onGround = true;
+        
         if (xInput == 0) ChangeState(States::IDLE);
         else ChangeState(States::WALK);
     }
+    else ChangeState(States::FALL);
 }
