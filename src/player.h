@@ -42,6 +42,8 @@ private:
 public:
     Player(float xpos, float ypos, b2World *world, const std::string& image);
     
+    sf::Vector2f getPosition() const;
+
     const sf::Sprite& getSprite();
     void Animate(float deltaTime);
     void ChangeState(States newState);

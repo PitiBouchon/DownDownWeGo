@@ -11,12 +11,9 @@
 #include "Tile/tilemapManager.h"
 
 // ----- GLOBAL PARAMETERS ----- //
-constexpr auto WINDOW_WIDTH = 720;
-constexpr auto WINDOW_HEIGHT = 720;
 constexpr auto MAX_FPS = 60;
-
 constexpr auto GRAVITY = 100;
-
+constexpr auto ZOOM = 2;
 const auto displayFPS = true;
 
 // ------ Used Namespaces ----- //
@@ -40,38 +37,40 @@ int main()
     tmx::Map map;
     map.load("resources/maps/map1.tmx");
 
-
     // ----- Window & Camera ----- //
-    RenderWindow window(VideoMode(map.getBounds().width, map.getBounds().height), "Down Down We Go");
+    RenderWindow window(VideoMode(2* map.getBounds().width, 2* map.getBounds().height), "Down Down We Go", sf::Style::Close);
     window.setFramerateLimit(MAX_FPS);
     window.setKeyRepeatEnabled(false);
     
     Camera camera(&window);
-    window.setView(camera.getView());
-    camera.view.setSize(map.getBounds().width, map.getBounds().height);
-    camera.view.setCenter(map.getBounds().width / 2 , map.getBounds().height / 2);
+    camera.view.setSize(sf::Vector2f(window.getSize()));
+    camera.view.setCenter(sf::Vector2f(window.getSize().x / 4, window.getSize().y / 2));
+    camera.view.zoom(1.0f/ZOOM);
 
+    sf::View view = camera.getView();
+    window.setView(view);
 
     // ----- Text ----- //
     sf::Font arial;
     arial.loadFromFile("resources/arial.ttf");
     
-    double fps;
+    int fps = 0;
     Text framerate;
     framerate.setFont(arial);
     framerate.setCharacterSize(18);
     framerate.setFillColor(Color::Red);
 
+    sf::Font UIFont;
+    UIFont.loadFromFile("resources/adventures.ttf");
 
-    // ----- Background ----- //
-    Texture bgTexture;
-    bgTexture.loadFromFile("resources/cave_bg.png");
-    Sprite background(bgTexture);
-    background.setScale(WINDOW_WIDTH / background.getLocalBounds().width, WINDOW_HEIGHT / background.getLocalBounds().height);
+    int depth = 0;
+    Text depthText;
+    depthText.setFont(UIFont);
+    depthText.setCharacterSize(24);
+    depthText.setFillColor(Color::White);
 
     // ----- Player ----- //
-    Player player(WINDOW_WIDTH/2, 1, &world, "resources/player_spritesheet.png");
-
+    Player player(window.getSize().x / 2, 1, &world, "resources/player_spritesheet.png");
 
     // ----- Clock ----- //
     Clock clock;
@@ -116,26 +115,36 @@ int main()
 
         // ----- Window Update ----- //
         window.clear();
-        camera.moveTo(sf::Vector2f(camera.getPosition().x, player.getSprite().getPosition().y + 60));
+        camera.update(player.getPosition().y, deltaTime);
         window.setView(camera.getView());
 
         player.Update();
         player.Animate(deltaTime);
         tilemapManager.update(camera);
         
-        window.draw(background);
         window.draw(tilemapManager);
         window.draw(player.getSprite());
 
-        // Framerate display
+        //----- UI Display ---- //
+        view = camera.getView();
+        view.zoom(ZOOM);
+        window.setView(view);
+
+        depth = (int) (camera.getOrigin().y / 10);
+        depthText.setString(std::to_string(depth) + " M");
+        depthText.setPosition(camera.getCenter().x, window.getView().getCenter().y - window.getSize().y /2 + 20);
+        window.draw(depthText);
+
+        // FPS display
         if (displayFPS)
         {
-            fps = std::min((float)MAX_FPS, 1 / deltaTime);
-            framerate.setString("fps: " + fmt::format("{:.2f}", fps));
-            framerate.setPosition(0, camera.getOrigin().y );
+            fps = std::min(MAX_FPS,(int) (1 / deltaTime));
+            framerate.setString("fps: " + std::to_string(fps));
+            framerate.setPosition(0, window.getView().getCenter().y - window.getSize().y / 2);
             window.draw(framerate);
-            window.display();
         }
+
+        window.display();
     }
 
     return 0;

@@ -41,6 +41,12 @@ const sf::Sprite & Player::getSprite()
     return sprite;
 }
 
+sf::Vector2f Player::getPosition() const
+{
+    return rb.getPixelPos();
+}
+
+
 void Player::Animate(float deltaTime)
 {
     animationClock += deltaTime;
@@ -58,7 +64,7 @@ void Player::ChangeState(States newState)
 
     frame = 0;
     state = newState;
-
+    
     switch (state) {
     case States::IDLE: std::cout << "IDLE\n"; break;
     case States::WALK: std::cout << "WALK\n"; break;
@@ -145,6 +151,7 @@ void Player::HandleKeyReleased(Command command)
     else if (command == Command::GRAB)
     {
         ChangeState(States::FALL);
+        onGround = false;
     }
 }
 
@@ -161,7 +168,10 @@ void Player::Update()
         rb.setVelocity(b2Vec2(xInput * BASE_SPEED, b2Velocity.y));
         
         if (b2Velocity.y == 0) { if (!onGround) Land(); }
-        else ChangeState(States::FALL);
+        else {
+            ChangeState(States::FALL);
+            onGround = false;
+        }
     }
 }
 
