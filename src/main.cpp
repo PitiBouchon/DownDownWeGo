@@ -21,7 +21,7 @@ int main()
 {
 
     tmx::Map map;
-    map.load("/mnt/c/Users/Pierre/Documents/TSP/2A/DevCpp/DownDownWeGo/resources/maps/map1.tmx");
+    map.load("C:/Users/clemence/Documents/Travail/TSP/CSC4526_Cpp/Projet/DownDownWeGo/resources/maps/map1.tmx");
 
     // ----- Physics ----- //
     // Define the gravity vector.
@@ -34,7 +34,7 @@ int main()
     MyContactListener listener;
     world.SetContactListener(&listener);
 
-    TilemapManager tilemapManager("/mnt/c/Users/Pierre/Documents/TSP/2A/DevCpp/DownDownWeGo/resources/maps/", &world);
+    TilemapManager tilemapManager("C:/Users/clemence/Documents/Travail/TSP/CSC4526_Cpp/Projet/DownDownWeGo/resources/maps", &world);
 
     // ----- Window ----- //
     RenderWindow window(VideoMode(map.getBounds().width, map.getBounds().height), "DownDownWeGo");
