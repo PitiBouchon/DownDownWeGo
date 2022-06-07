@@ -19,8 +19,10 @@ private:
 public:
     MyTilemap() = default;
     MyTilemap(const tmx::Map& map, b2World *world, sf::Vector2f offset);
-    void addOffset(sf::Vector2f offset);
+    
+    void addOffset(sf::Vector2f offset) const;
     sf::FloatRect getBounds() const;
+
     void draw(sf::RenderTarget& rt, sf::RenderStates states) const override;
 };
 

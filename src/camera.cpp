@@ -1,13 +1,7 @@
 #include "camera.h"
 #include "player.h"
 
-Camera::Camera(sf::RenderWindow *window) {
-    view = window->getDefaultView();
-//    sf::Vector2<unsigned int> window_size = window->getSize();
-//    view.setSize((float) window_size.x, (float) window_size.y);
-//    view.setCenter((float) window_size.x / 2, (float) window_size.y / 2); // Center the view
-//    view.zoom(0.5f);
-}
+Camera::Camera(const sf::RenderWindow *window) : view(window->getDefaultView()) {}
 
 void Camera::move(sf::Vector2f dir)
 {
@@ -19,17 +13,22 @@ void Camera::moveTo(sf::Vector2f pos)
     view.setCenter(pos);
 }
 
-const sf::Vector2f &Camera::getPosition() const
+const sf::Vector2f& Camera::getPosition() const
 {
     return view.getCenter();
 }
 
-const sf::Vector2f &Camera::getSize() const
+const sf::Vector2f& Camera::getSize() const
 {
     return view.getSize();
 }
 
-const sf::View &Camera::getView()
+sf::Vector2f Camera::getOrigin() const
+{
+    return sf::Vector2f(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2);
+}
+
+const sf::View& Camera::getView() const
 {
     return view;
 }

@@ -15,16 +15,19 @@ class Rigidbody {
 private:
     b2Body* body{};
     b2Vec2 offset = {0, 0};
+
 public:
     Rigidbody() = default;
-    Rigidbody(b2World *world, b2BodyType type, sf::Sprite image);
+    Rigidbody(b2World *world, b2BodyType type, const sf::Sprite& image);
     Rigidbody(b2World *world, b2BodyType type, const b2Shape *shape, sf::Vector2f pixelPos);
-    const sf::Vector2f getPixelPos();
-    const b2Vec2 getPhysicPos();
-    const b2Vec2 &getVelocity();
+    
+    sf::Vector2f getPixelPos() const;
+    b2Vec2 getPhysicPos() const;
+    const b2Vec2& getVelocity() const;
+    float getAngle() const;
+
     void setVelocity(const b2Vec2 &vel);
     void setCollisionDetection(CollisionDetection *cd);
-    float getAngle();
     void addImpulse(b2Vec2 impulse);
 };
 

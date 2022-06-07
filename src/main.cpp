@@ -113,12 +113,11 @@ int main()
         }
 
         world.Step(timeStep, velocityIterations, positionIterations);
-        sf::Time duration = clock.getElapsedTime();
 
         // ----- Window Update ----- //
         window.clear();
-        window.setView(camera.getView());
         camera.moveTo(sf::Vector2f(camera.getPosition().x, player.getSprite().getPosition().y + 60));
+        window.setView(camera.getView());
 
         player.Update();
         player.Animate(deltaTime);
@@ -133,6 +132,7 @@ int main()
         {
             fps = std::min((float)MAX_FPS, 1 / deltaTime);
             framerate.setString("fps: " + fmt::format("{:.2f}", fps));
+            framerate.setPosition(0, camera.getOrigin().y );
             window.draw(framerate);
             window.display();
         }

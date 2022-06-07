@@ -168,9 +168,9 @@ void Player::Update()
 
 void Player::BeginCollision(b2Contact *contact)
 {
-    if (contact->GetManifold()->localNormal.y <= 0)
+    if (contact->GetManifold()->localNormal.y > 0)
     {
-        if (rb.getVelocity().y > LETHAL_SPEED)
+        if (rb.getVelocity().y >= LETHAL_SPEED)
         {
             // Die here
             printf("PLAYER IS DEAD !\n");

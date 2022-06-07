@@ -13,7 +13,13 @@ TilemapManager::TilemapManager(std::string maps_path, b2World *world) {
     {
         std::string path = paths[rand() % paths.size()];
         tmx::Map map;
+        
+        std::streambuf* orig_buf = std::cout.rdbuf();
+        std::cout.rdbuf(NULL); //Removes Logs
+
         map.load(path);
+        
+        std::cout.rdbuf(orig_buf); //Restores Logs
 
 
         if (i != 0)
@@ -41,12 +47,16 @@ void TilemapManager::draw(sf::RenderTarget &rt, sf::RenderStates states) const
 void TilemapManager::update(const Camera &camera)
 {
     MyTilemap *mt = const_cast<MyTilemap *>(&displayed_map[index_map_to_change]);
-//    std::cout << mt->getBounds().top + mt->getBounds().height << std::endl;
+
     if (mt->getBounds().top + mt->getBounds().height < camera.getPosition().y - camera.getSize().y)
     {
         std::string path = paths[rand() % paths.size()];
         tmx::Map map;
+        
+        std::streambuf* orig_buf = std::cout.rdbuf();
+        std::cout.rdbuf(NULL);
         map.load(path);
+        std::cout.rdbuf(orig_buf);
 
         sf::Vector2f offset;
         if (index_map_to_change == 0)
