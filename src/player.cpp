@@ -128,7 +128,7 @@ void Player::HandleKeyPressed(Command command)
     {
         Jump();
     }
-    else if (command == Command::GRAB)
+    else if (command == Command::GRAB && HasEndurance())
     {
         onGround = true;
         ChangeState(States::CLIMB);
@@ -151,10 +151,12 @@ void Player::HandleKeyReleased(Command command)
 
 void Player::Update()
 {
+    
     b2Vec2 b2Velocity = rb.getVelocity();
     if (state == States::CLIMB)
     {
-        rb.setVelocity(b2Vec2(0, b2Velocity.y));
+        rb.setVelocity(b2Vec2(0, std::min(b2Velocity.y, GRAB_SPEED)));
+        Exhaust(0.5);
     }
     else
     {

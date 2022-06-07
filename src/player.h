@@ -28,6 +28,7 @@ private:
     const float LETHAL_SPEED = 100;
     const float JUMP_HEIGHT = 25;
     const float BASE_SPEED = 7;
+    const float GRAB_SPEED = 25;
 
     float xInput = 0;
     bool onGround = false;
