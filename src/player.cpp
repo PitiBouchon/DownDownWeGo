@@ -92,6 +92,14 @@ void Player::Jump()
     }
 }
 
+void Player::Land()
+{
+    onGround = true;
+    if (xInput == 0) ChangeState(States::IDLE);
+    else ChangeState(States::WALK);
+
+    RefillEndurance();
+}
 
 void Player::HandleInput(sf::Event event)
 {
@@ -151,6 +159,9 @@ void Player::Update()
     else
     {
         rb.setVelocity(b2Vec2(xInput * BASE_SPEED, b2Velocity.y));
+        
+        if (b2Velocity.y == 0) { if (!onGround) Land(); }
+        else ChangeState(States::FALL);
     }
 }
 
@@ -165,10 +176,6 @@ void Player::BeginCollision(b2Contact *contact)
             printf("PLAYER IS DEAD !\n");
         }
 
-        onGround = true;
-        
-        if (xInput == 0) ChangeState(States::IDLE);
-        else ChangeState(States::WALK);
+        Land();
     }
-    else ChangeState(States::FALL);
 }

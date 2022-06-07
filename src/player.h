@@ -26,7 +26,7 @@ private:
     float endurance = MAX_ENDURANCE;
 
     const float LETHAL_SPEED = 100;
-    const float JUMP_HEIGHT = 20;
+    const float JUMP_HEIGHT = 25;
     const float BASE_SPEED = 5;
 
     float xInput = 0;
@@ -51,6 +51,7 @@ public:
     bool HasEndurance() const;
 
     void Jump();
+    void Land();
 
     void HandleInput(sf::Event event);
     void HandleKeyPressed(Command command);
