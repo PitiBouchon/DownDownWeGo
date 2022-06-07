@@ -12,7 +12,6 @@ Player::Player(float xpos, float ypos, b2World *world, const filePath& image)
     texture.loadFromFile(image);
     sprite.setTexture(texture);
     sprite.setTextureRect(sf::IntRect(0, 0, spriteSize, spriteSize));
-    sprite.setScale(2, 2);
     sprite.setPosition(xpos, ypos);
 
     //Setting default inputs
@@ -71,7 +70,7 @@ void Player::ChangeState(States newState)
 }
 
 void Player::RefillEndurance() {
-    endurance = maxEndurance;
+    endurance = MAX_ENDURANCE;
 }
 
 void Player::Exhaust(float value) {
@@ -87,8 +86,7 @@ void Player::Jump()
 {
     if (onGround)
     {
-        // TODO : Valeur codée à la main
-        rb.addImpulse(b2Vec2(0, -100.0f));
+        rb.addImpulse(b2Vec2(0, -JUMP_HEIGHT));
         onGround = false;
         ChangeState(States::JUMP);
     }
@@ -152,7 +150,7 @@ void Player::Update()
     }
     else
     {
-        rb.setVelocity(b2Vec2(xInput * baseSpeed, b2Velocity.y));
+        rb.setVelocity(b2Vec2(xInput * BASE_SPEED, b2Velocity.y));
     }
 }
 

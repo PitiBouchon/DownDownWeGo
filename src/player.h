@@ -22,11 +22,12 @@ private:
     std::array<int, 5> frames = { 4, 6, 4, 8, 8 };
     float animationClock = 0;
 
-    const float maxEndurance = 20;
-    float endurance = maxEndurance;
+    const float MAX_ENDURANCE = 20;
+    float endurance = MAX_ENDURANCE;
 
-    const float LETHAL_SPEED = 20;
-    float baseSpeed = 5;
+    const float LETHAL_SPEED = 100;
+    const float JUMP_HEIGHT = 20;
+    const float BASE_SPEED = 5;
 
     float xInput = 0;
     bool onGround = false;
