@@ -156,7 +156,12 @@ void Player::Update()
     if (state == States::CLIMB)
     {
         rb.setVelocity(b2Vec2(0, std::min(b2Velocity.y, GRAB_SPEED)));
-        Exhaust(0.5);
+        Exhaust(0.1);
+        if (!HasEndurance())
+        {  
+            std::cout << "No Endurance!\n";
+            ChangeState(States::FALL);
+        }
     }
     else
     {
