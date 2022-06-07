@@ -33,12 +33,12 @@ int main()
     MyContactListener listener;
     world.SetContactListener(&listener);
 
-    TilemapManager tilemapManager("C:/Users/clemence/Documents/Travail/TSP/CSC4526_Cpp/Projet/DownDownWeGo/resources/maps/", &world);
+    TilemapManager tilemapManager("resources/maps/", &world);
 
 
     // ----- Map ----- //
     tmx::Map map;
-    map.load("C:/Users/clemence/Documents/Travail/TSP/CSC4526_Cpp/Projet/DownDownWeGo/resources/maps/map1.tmx");
+    map.load("resources/maps/map1.tmx");
 
 
     // ----- Window & Camera ----- //

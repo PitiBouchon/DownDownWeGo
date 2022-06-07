@@ -21,11 +21,13 @@ MyTilemap::MyTilemap(const tmx::Map &map, b2World *world, sf::Vector2f offset) {
 
     for (int index = 0; index < map.getLayers().size(); index++) {
         auto const &layer = map.getLayers()[index];
+        
         // Tile images
         if (layer->getType() == tmx::Layer::Type::Tile)
         {
             const auto &tile_layer = layer->getLayerAs<tmx::TileLayer>();
             auto map_layer = std::make_unique<MapLayer>(map, index);
+            
             map_layer->addOffset(offset);
             tile_layers.push_back(std::move(map_layer));
             int counter = 0;
