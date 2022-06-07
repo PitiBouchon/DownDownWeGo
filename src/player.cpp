@@ -166,9 +166,13 @@ void Player::Update()
     else
     {
         rb.setVelocity(b2Vec2(xInput * BASE_SPEED, b2Velocity.y));
-        
+
         if (b2Velocity.y == 0) { if (!onGround) Land(); }
-        else ChangeState(States::FALL);
+        else
+        {
+            ChangeState(States::FALL);
+            onGround = false;
+        }
     }
 }
 
