@@ -13,8 +13,8 @@
 // ----- GLOBAL PARAMETERS ----- //
 constexpr auto MAX_FPS = 60;
 constexpr auto GRAVITY = 100;
-constexpr auto ZOOM = 2;
-const auto displayFPS = true;
+constexpr auto ZOOM = 1.5f;
+const auto debug = true;
 
 // ------ Used Namespaces ----- //
 using namespace std;
@@ -30,21 +30,23 @@ int main()
     MyContactListener listener;
     world.SetContactListener(&listener);
 
-    TilemapManager tilemapManager("resources/maps/", &world);
-
 
     // ----- Map ----- //
-    tmx::Map map;
-    map.load("resources/maps/map1.tmx");
+    string absolutePath = "C:/Users/clemence/Documents/Travail/TSP/CSC4526_Cpp/Projet/DownDownWeGo/";
+    TilemapManager tilemapManager(absolutePath + "resources/maps/", &world);
+
 
     // ----- Window & Camera ----- //
-    RenderWindow window(VideoMode(2* map.getBounds().width, 2* map.getBounds().height), "Down Down We Go", sf::Style::Close);
+    auto windowWidth = ZOOM * tilemapManager.getMapWidth();
+    auto windowHeight = 2 * ZOOM * tilemapManager.getMapHeight();
+
+    RenderWindow window(VideoMode(windowWidth, windowHeight), "Down Down We Go", sf::Style::Close);
     window.setFramerateLimit(MAX_FPS);
     window.setKeyRepeatEnabled(false);
     
     Camera camera(&window);
     camera.view.setSize(sf::Vector2f(window.getSize()));
-    camera.view.setCenter(sf::Vector2f(window.getSize().x / 4, window.getSize().y / 2));
+    camera.view.setCenter(sf::Vector2f(windowWidth / (2 * ZOOM), windowHeight));
     camera.view.zoom(1.0f/ZOOM);
 
     sf::View view = camera.getView();
@@ -55,10 +57,10 @@ int main()
     arial.loadFromFile("resources/arial.ttf");
     
     int fps = 0;
-    Text framerate;
-    framerate.setFont(arial);
-    framerate.setCharacterSize(18);
-    framerate.setFillColor(Color::Red);
+    Text debugText;
+    debugText.setFont(arial);
+    debugText.setCharacterSize(18);
+    debugText.setFillColor(Color::Red);
 
     sf::Font UIFont;
     UIFont.loadFromFile("resources/adventures.ttf");
@@ -70,7 +72,7 @@ int main()
     depthText.setFillColor(Color::White);
 
     // ----- Player ----- //
-    Player player(window.getSize().x / 2, 1, &world, "resources/player_spritesheet.png");
+    Player player(windowWidth / 2, windowHeight / 2, &world, "resources/player_spritesheet.png");
 
     // ----- Clock ----- //
     Clock clock;
@@ -130,18 +132,25 @@ int main()
         view.zoom(ZOOM);
         window.setView(view);
 
+        auto screenYTop = window.getView().getCenter().y - windowHeight / 2;
+        auto screenXCenter = window.getView().getCenter().x;
+
         depth = (int) (camera.getOrigin().y / 10);
         depthText.setString(std::to_string(depth) + " M");
-        depthText.setPosition(camera.getCenter().x, window.getView().getCenter().y - window.getSize().y /2 + 20);
+        depthText.setPosition(screenXCenter - depthText.getLocalBounds().width /2, screenYTop + 20);
         window.draw(depthText);
 
-        // FPS display
-        if (displayFPS)
+        // Debug display (fps and other info)
+        if (debug)
         {
             fps = std::min(MAX_FPS,(int) (1 / deltaTime));
-            framerate.setString("fps: " + std::to_string(fps));
-            framerate.setPosition(0, window.getView().getCenter().y - window.getSize().y / 2);
-            window.draw(framerate);
+            debugText.setString("fps: " + std::to_string(fps));
+            debugText.setPosition(0, screenYTop);
+            window.draw(debugText);
+
+            debugText.setString("y speed: " + std::to_string((int)player.getVerticalSpeed()));
+            debugText.setPosition(0, screenYTop + debugText.getCharacterSize());
+            window.draw(debugText);
         }
 
         window.display();

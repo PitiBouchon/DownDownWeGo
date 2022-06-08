@@ -2,11 +2,7 @@
 #include <iostream>
 #include "player.h"
 
-
-using filePath = std::string;
-const int spriteSize = 32;
-
-Player::Player(float xpos, float ypos, b2World *world, const filePath& image)
+Player::Player(float xpos, float ypos, b2World *world, const std::string& image)
 {
     // Loading texture
     texture.loadFromFile(image);
@@ -21,7 +17,8 @@ Player::Player(float xpos, float ypos, b2World *world, const filePath& image)
     inputsMap[sf::Keyboard::Space] = Command::GRAB;
 
     //Creating rigidbody
-    rb = Rigidbody(world, b2_dynamicBody, sprite);
+    auto rbSize = sf::Vector2f(0.5f * spriteSize, 0.9f * spriteSize);
+    rb = Rigidbody(world, b2_dynamicBody, rbSize, sprite.getPosition());
     rb.setCollisionDetection(this);
 }
 
@@ -46,6 +43,10 @@ sf::Vector2f Player::getPosition() const
     return rb.getPixelPos();
 }
 
+float Player::getVerticalSpeed() const
+{
+    return rb.getVelocity().y;
+}
 
 void Player::Animate(float deltaTime)
 {

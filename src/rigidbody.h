@@ -18,8 +18,8 @@ private:
 
 public:
     Rigidbody() = default;
-    Rigidbody(b2World *world, b2BodyType type, const sf::Sprite& image);
-    Rigidbody(b2World *world, b2BodyType type, const b2Shape *shape, sf::Vector2f pixelPos);
+    Rigidbody(b2World *world, b2BodyType type, const b2Shape* shape, const sf::Vector2f pixelPos);
+    Rigidbody(b2World *world, b2BodyType type, const sf::Vector2f shapeSize, const sf::Vector2f pixelPos);
     
     sf::Vector2f getPixelPos() const;
     b2Vec2 getPhysicPos() const;

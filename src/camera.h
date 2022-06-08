@@ -9,7 +9,7 @@
 class Camera {
 private :
     const float cameraSmoothSpeed = 1.3f;
-    const float cameraFallSpeed = 100;
+    const float cameraFallSpeed = 25;
     const float moveThreshold = 100;
 
 public:

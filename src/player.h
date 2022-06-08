@@ -9,24 +9,25 @@
 
 enum class Command { LEFT, RIGHT, JUMP, GRAB };
 
-enum class States { IDLE, WALK, CLIMB, JUMP, FALL };
+enum class States { IDLE, WALK, CLIMB, JUMP, FALL, DEATH };
 enum class Direction { LEFT, RIGHT };
 
 
 class Player : public CollisionDetection {
 private:
+    const int spriteSize = 32;
     sf::Texture texture;
     sf::Sprite sprite;
 
     int frame = 0;
-    std::array<int, 5> frames = { 4, 6, 4, 8, 8 };
+    std::array<int, 6> frames = { 4, 6, 4, 8, 4, 8 };
     float animationClock = 0;
 
     const float MAX_ENDURANCE = 20;
     float endurance = MAX_ENDURANCE;
 
-    const float LETHAL_SPEED = 100;
-    const float JUMP_HEIGHT = 25;
+    const float LETHAL_SPEED = 50;
+    const float JUMP_HEIGHT = 10;
     const float BASE_SPEED = 7;
 
     float xInput = 0;
@@ -41,8 +42,10 @@ private:
 
 public:
     Player(float xpos, float ypos, b2World *world, const std::string& image);
+    virtual ~Player() = default;
     
     sf::Vector2f getPosition() const;
+    float getVerticalSpeed() const;
 
     const sf::Sprite& getSprite();
     void Animate(float deltaTime);
