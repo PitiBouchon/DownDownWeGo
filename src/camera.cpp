@@ -63,3 +63,8 @@ float Camera::DistanceToPlayer() const
 {
     return distanceToPlayer;
 }
+
+float Camera::FallSpeed() const
+{
+    return fallSpeed;
+}
