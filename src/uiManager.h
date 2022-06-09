@@ -4,8 +4,8 @@
 class UIManager {
 private:
 	const bool debug = true;
-	const float screenXCenter;
-	const float screenYTop;
+	float screenXCenter = 0;
+	float screenYTop = 0;
 
 	//UI Text
 	sf::Text uiText;
@@ -25,6 +25,8 @@ private:
 	std::string debugFontPath = "resources/arial.ttf";
 
 public:
-	explicit UIManager(const sf::RenderWindow* window);
-	void display(sf::RenderWindow* window, const sf::View& cameraView, const float zoom, const int score, const int fps, const std::string& gameInfo);
+	UIManager();
+	void SetWindow(const sf::RenderWindow* window);
+
+	void Draw(sf::RenderWindow* window, const sf::View& cameraView, const float zoom, const int score, const int fps, const std::string& gameInfo);
 };

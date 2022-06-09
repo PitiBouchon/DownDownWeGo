@@ -18,27 +18,27 @@ using namespace sf;
 
 int main()
 {
+    // ----- Game Manager ----- //
+    GameManager gameManager(ZOOM, MAX_FPS);
+    auto windowSize = sf::Vector2u(ZOOM * gameManager.getMapWidth(), 2 * ZOOM * gameManager.getMapHeight());
+
     // ----- Window Creation ----- //
-    RenderWindow window(VideoMode(0, 0), "Down Down We Go", sf::Style::Close);
+    RenderWindow window(VideoMode(windowSize.x, windowSize.y), "Down Down We Go", sf::Style::Close);
     window.setFramerateLimit(MAX_FPS);
     window.setKeyRepeatEnabled(false);
-    
-    // ----- Game Manager ----- //
-    GameManager gameManager(&window, ZOOM, MAX_FPS);
-    
-    auto windowSize = sf::Vector2u(ZOOM * gameManager.getMapWidth(), 2 * ZOOM * gameManager.getMapHeight());
     window.setSize(windowSize);
 
     sf::View view = gameManager.getCameraView();
     window.setView(view);
 
+    gameManager.SetWindow(&window);
     
     // ----- Music ----- //
     sf::Music BGM;
     if (!BGM.openFromFile("resources/trippin-ost.wav")) return -1;
     BGM.setLoop(true);
 
-    float volume = 50;
+    float volume = 0;
     BGM.setVolume(volume);
     BGM.play();
 
@@ -81,7 +81,7 @@ int main()
         }
 
         // ----- Window Display ----- //
-        gameManager.Draw(&window, deltaTime);
+        gameManager.Draw(deltaTime);
         window.display();
     }
 

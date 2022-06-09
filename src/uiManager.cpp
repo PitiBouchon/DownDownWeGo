@@ -1,8 +1,7 @@
 #include "uiManager.h"
+#include <iostream>
 
-UIManager::UIManager(const sf::RenderWindow* window) :
-    screenXCenter(window->getView().getCenter().x),
-    screenYTop(window->getView().getCenter().y - window->getSize().y / 2.0f)
+UIManager::UIManager()
 {
 	uiFont.loadFromFile(uiFontPath);
 	uiText.setFont(uiFont);
@@ -15,7 +14,14 @@ UIManager::UIManager(const sf::RenderWindow* window) :
 	uiText.setFillColor(debugColor);
 }
 
-void UIManager::display(sf::RenderWindow * window, const sf::View& cameraView, const float zoom, const int score, const int fps, const std::string& gameInfo)
+void UIManager::SetWindow(const sf::RenderWindow* window)
+{
+    screenXCenter = window->getView().getCenter().x;
+    screenYTop = window->getView().getCenter().y - window->getSize().y / 2.0f;
+}
+
+
+void UIManager::Draw(sf::RenderWindow * window, const sf::View& cameraView, const float zoom, const int score, const int fps, const std::string& gameInfo)
 {
     // ----- UI Display ----- //
     sf::View view = cameraView;

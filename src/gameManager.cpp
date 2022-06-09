@@ -3,18 +3,24 @@
 
 const std::string absolutePath = "C:/Users/clemence/Documents/Travail/TSP/CSC4526_Cpp/Projet/DownDownWeGo/";
 
-GameManager::GameManager(const sf::RenderWindow* window, float cameraZoom, int maxFps) :
+GameManager::GameManager(float cameraZoom, int maxFps) :
     timeStep(1.0f/maxFps),
     world(b2Vec2(0.0f, GRAVITY)),
     tmxManager(absolutePath + "resources/maps/", &world),
     player(tmxManager.getMapWidth() / 2, tmxManager.getMapHeight() * 3, &world, "resources/player_spritesheet.png"),
-    camera(window, cameraZoom),
-    uiManager(window),
     cameraZoom(cameraZoom),
     MAX_FPS(maxFps)
 {
     world.SetContactListener(&listener);
 }
+
+void GameManager::SetWindow(sf::RenderWindow* window_p)
+{
+    window = window_p;
+    camera.SetWindow(window, cameraZoom);
+    uiManager.SetWindow(window);
+}
+
 
 void GameManager::Update()
 {
@@ -23,20 +29,20 @@ void GameManager::Update()
     tmxManager.update(camera);
 }
 
-void GameManager::DisplayUI(sf::RenderWindow* window, float deltaTime)
+void GameManager::DisplayUI(float deltaTime)
 {
     score = (int)(camera.getOrigin().y / 10);
     fps = std::min(MAX_FPS, (int)(1 / deltaTime));
     std::string gameInfo = "fallSpeed : " + std::to_string(camera.FallSpeed());
-    uiManager.display(window, camera.getView(), cameraZoom, score, fps, gameInfo);
+    uiManager.Draw(window, camera.getView(), cameraZoom, score, fps, gameInfo);
 }
 
-void GameManager::Draw(sf::RenderWindow* window, float deltaTime)
+void GameManager::Draw(float deltaTime)
 {
     player.Animate(deltaTime);
     window->draw(tmxManager);
     window->draw(player.getSprite());
-    //DisplayUI(window, deltaTime);
+    DisplayUI(deltaTime);
 }
 
 void GameManager::HandleInput(sf::Event event)

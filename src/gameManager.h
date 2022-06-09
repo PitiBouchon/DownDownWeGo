@@ -24,7 +24,8 @@ private:
 	MyContactListener listener;
 	TilemapManager tmxManager;
 	Player player;
-
+	
+	sf::RenderWindow* window = nullptr;
 	Camera camera;
 	UIManager uiManager;
 
@@ -36,11 +37,12 @@ private:
 	int score = 0;
 
 public:
-	GameManager(const sf::RenderWindow* window, float cameraZoom, int maxFps);
+	GameManager(float cameraZoom, int maxFps);
+	void SetWindow(sf::RenderWindow* window);
 
 	void Update();
-	void DisplayUI(sf::RenderWindow* window, float deltaTime);
-	void Draw(sf::RenderWindow* window, float deltaTime);
+	void DisplayUI(float deltaTime);
+	void Draw(float deltaTime);
 	void HandleInput(sf::Event event);
 
 	void Pause();

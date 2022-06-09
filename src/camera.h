@@ -15,11 +15,12 @@ private :
     const float smoothSpeed = 1.3f;
     const float moveThreshold = 300;
 
-    float distanceToPlayer;
+    float distanceToPlayer = 0;
     sf::View view;
 
 public:
-    Camera(const sf::RenderWindow *window, float zoom);
+    Camera() = default;
+    void SetWindow(const sf::RenderWindow* window, float zoom);
 
     void move(sf::Vector2f dir);
     void moveTo(sf::Vector2f pos);
