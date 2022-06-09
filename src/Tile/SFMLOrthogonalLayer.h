@@ -132,7 +132,6 @@ public:
 
 private:
     //increasing m_chunkSize by 4; fixes render problems when mapsize != chunksize
-    //sf::Vector2f m_chunkSize = sf::Vector2f(1024.f, 1024.f);
     sf::Vector2f m_chunkSize = sf::Vector2f(512.f, 512.f);
     sf::Vector2u m_chunkCount;
     sf::Vector2u m_MapTileSize;   // general Tilesize of Map
@@ -548,8 +547,6 @@ private:
                 {
                     tileCount.y = (bounds.height - y * m_chunkSize.y) / map.getTileSize().y;
                 }
-                //m_chunks.emplace_back(std::make_unique<Chunk>(layer, usedTileSets,
-                //    sf::Vector2f(x * m_chunkSize.x, y * m_chunkSize.y), tileCount, map.getTileCount().x, m_textureResource));
                 m_chunks.emplace_back(std::make_unique<Chunk>(layer, usedTileSets,
                     sf::Vector2f(x * m_chunkSize.x, y * m_chunkSize.y), tileCount, tileSize, map.getTileCount().x, m_textureResource, map.getAnimatedTiles()));
             }
@@ -560,11 +557,6 @@ private:
     {
         sf::Vector2f viewCorner = view.getCenter();
         viewCorner -= view.getSize() / 2.f;
-
-//        int posX = static_cast<int>(std::floor(viewCorner.x / m_chunkSize.x));
-//        int posY = static_cast<int>(std::floor(viewCorner.y / m_chunkSize.y));
-//        int posX2 = static_cast<int>(std::ceil((viewCorner.x + view.getSize().x) / m_chunkSize.x));
-//        int posY2 = static_cast<int>(std::ceil((viewCorner.y + view.getSize().y) / m_chunkSize.y));
 
         int posX = 0; //static_cast<int>(std::floor(viewCorner.x / m_chunkSize.x));
         int posY = 0; //static_cast<int>(std::floor(viewCorner.y / m_chunkSize.y));
@@ -583,11 +575,6 @@ private:
                 }
             }
         }
-
-//        for (auto &c : visible)
-//        {
-//            c->setPosition(sf::Vector2f(m_globalBounds.left, m_globalBounds.top));
-//        }
 
         std::swap(m_visibleChunks, visible);
     }
@@ -612,7 +599,7 @@ public:
                 auto overallDuration = sf::milliseconds(0);
                 tmx::TileLayer::Tile tile;
                 tile.ID = as.animTile.animation.frames[0].tileID;
-                tile.flipFlags = 0; // TODO: get flipFlags from original tmx::TileLayer::Tile
+                tile.flipFlags = 0;
                 for (const auto& frame : as.animTile.animation.frames)
                 {
                     overallDuration += sf::milliseconds(frame.duration);
