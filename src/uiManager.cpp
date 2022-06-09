@@ -3,26 +3,23 @@
 
 UIManager::UIManager()
 {
-	uiFont.loadFromFile(uiFontPath);
+	uiFont.loadFromFile("resources/adventures.ttf");
 	uiText.setFont(uiFont);
 	uiText.setCharacterSize(uiFontSize);
-	uiText.setFillColor(uiColor);
+	uiText.setFillColor(sf::Color::White);
 
-	debugFont.loadFromFile(debugFontPath);
-	uiText.setFont(debugFont);
-	uiText.setCharacterSize(debugFontSize);
-	uiText.setFillColor(debugColor);
-}
-
-void UIManager::SetWindow(const sf::RenderWindow* window)
-{
-    screenXCenter = window->getView().getCenter().x;
-    screenYTop = window->getView().getCenter().y - window->getSize().y / 2.0f;
+	debugFont.loadFromFile("resources/arial.ttf");
+	debugText.setFont(debugFont);
+    debugText.setCharacterSize(debugFontSize);
+    debugText.setFillColor(sf::Color::Red);
 }
 
 
 void UIManager::Draw(sf::RenderWindow * window, const sf::View& cameraView, const float zoom, const int score, const int fps, const std::string& gameInfo)
 {
+    screenXCenter = window->getView().getCenter().x;
+    screenYTop = window->getView().getCenter().y - window->getSize().y / 2.0f;
+
     // ----- UI Display ----- //
     sf::View view = cameraView;
     view.zoom(zoom);

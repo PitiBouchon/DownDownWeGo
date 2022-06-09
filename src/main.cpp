@@ -22,6 +22,7 @@ int main()
     GameManager gameManager(ZOOM, MAX_FPS);
     auto windowSize = sf::Vector2u(ZOOM * gameManager.getMapWidth(), 2 * ZOOM * gameManager.getMapHeight());
 
+
     // ----- Window Creation ----- //
     RenderWindow window(VideoMode(windowSize.x, windowSize.y), "Down Down We Go", sf::Style::Close);
     window.setFramerateLimit(MAX_FPS);
@@ -32,13 +33,14 @@ int main()
     window.setView(view);
 
     gameManager.SetWindow(&window);
-    
+
+
     // ----- Music ----- //
     sf::Music BGM;
     if (!BGM.openFromFile("resources/trippin-ost.wav")) return -1;
     BGM.setLoop(true);
 
-    float volume = 0;
+    float volume = 100;
     BGM.setVolume(volume);
     BGM.play();
 

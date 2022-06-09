@@ -18,7 +18,6 @@ void GameManager::SetWindow(sf::RenderWindow* window_p)
 {
     window = window_p;
     camera.SetWindow(window, cameraZoom);
-    uiManager.SetWindow(window);
 }
 
 

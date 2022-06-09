@@ -38,7 +38,7 @@ private:
 
 public:
 	GameManager(float cameraZoom, int maxFps);
-	void SetWindow(sf::RenderWindow* window);
+	void SetWindow(sf::RenderWindow* window_p);
 
 	void Update();
 	void DisplayUI(float deltaTime);
