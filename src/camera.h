@@ -10,7 +10,7 @@ class Camera {
 private :
     const float fallAcceleration = 2.5;
     const float maxFallSpeed = 500;
-    float fallSpeed = 50;
+    float fallSpeed = 10;
 
     const float smoothSpeed = 1.3f;
     const float moveThreshold = 300;

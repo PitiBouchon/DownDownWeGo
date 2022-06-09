@@ -57,15 +57,7 @@ int main()
         oldtime = time;
         time = clock.getElapsedTime().asSeconds();
         deltaTime = time - oldtime;
-
-
-        // ----- Event Management ----- //
-	    sf::Event event{};
-	    while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed) window.close();
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) gameManager.Pause();
-        }
+        
 
         // ----- Window Update ----- //
         window.clear();
@@ -73,12 +65,18 @@ int main()
         window.setView(gameManager.getCameraView());
 
 
-        // ----- Game Update ----- //
-        if (gameManager.isRunning())
+        // ----- Event Management ----- //
+	    sf::Event event;
+	    while (window.pollEvent(event))
         {
-            gameManager.HandleInput(event);
-            gameManager.Update();
+            if (event.type == sf::Event::Closed) window.close();
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) gameManager.Pause();
+            if (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) gameManager.HandleInput(event);
         }
+
+        // ----- Game Update ----- //
+        if (gameManager.isRunning()) gameManager.Update();
+
 
         // ----- Window Display ----- //
         gameManager.Draw(deltaTime);

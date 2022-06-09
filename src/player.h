@@ -26,12 +26,14 @@ private:
     const float MAX_ENDURANCE = 20;
     float endurance = MAX_ENDURANCE;
 
-    const float LETHAL_SPEED = 40;
+    const float LETHAL_SPEED = 100;
     const float JUMP_HEIGHT = 10;
     const float BASE_SPEED = 7;
+    const float GRAB_SPEED = 0.5;
 
     float xInput = 0;
     bool onGround = false;
+    bool onWall = false;
 
     Rigidbody rb;
 
@@ -61,6 +63,7 @@ public:
     void Update(float distanceToCamera);
 
     void BeginCollision(b2Contact *contact) override;
+    void EndCollision(b2Contact* contact) override;
 
     sf::Vector2f getPosition() const;
     float getVerticalSpeed() const;
