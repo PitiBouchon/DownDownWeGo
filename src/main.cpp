@@ -1,18 +1,19 @@
 #include <SFML/Graphics.hpp>
-#include "box2d/box2d.h"
+#include <box2d/box2d.h>
 #include <iostream>
 #include <fmt/core.h>
 #include <tmxlite/Map.hpp>
 #include "Tile/SFMLOrthogonalLayer.h"
+#include "gameManager.h"
 #include "player.h"
 #include "camera.h"
 #include "myContactListener.h"
 #include "Tile/myTilemap.h"
 #include "Tile/tilemapManager.h"
 
+
 // ----- GLOBAL PARAMETERS ----- //
 constexpr auto MAX_FPS = 60;
-constexpr auto GRAVITY = 100;
 constexpr auto ZOOM = 1.5f;
 const auto debug = true;
 
@@ -23,34 +24,25 @@ using namespace sf;
 
 int main()
 {
-    // ----- Physics ----- //
-    b2Vec2 gravity(0.0f, GRAVITY); // Define the gravity vector.
-    b2World world(gravity); // Construct a world object, which will hold and simulate the rigid bodies.
-
-    MyContactListener listener;
-    world.SetContactListener(&listener);
-
-
-    // ----- Map ----- //
-    string absolutePath = "C:/Users/clemence/Documents/Travail/TSP/CSC4526_Cpp/Projet/DownDownWeGo/";
-    TilemapManager tilemapManager(absolutePath + "resources/maps/", &world);
+    // ----- Game Manager ----- //
+    GameManager gameManager(1.0f/MAX_FPS);
 
 
     // ----- Window & Camera ----- //
-    auto windowWidth = ZOOM * tilemapManager.getMapWidth();
-    auto windowHeight = 2 * ZOOM * tilemapManager.getMapHeight();
+    auto windowWidth = ZOOM * gameManager.getMapWidth();
+    auto windowHeight = 2 * ZOOM * gameManager.getMapHeight();
 
     RenderWindow window(VideoMode(windowWidth, windowHeight), "Down Down We Go", sf::Style::Close);
     window.setFramerateLimit(MAX_FPS);
     window.setKeyRepeatEnabled(false);
     
-    Camera camera(&window);
-    camera.view.setSize(sf::Vector2f(window.getSize()));
-    camera.view.setCenter(sf::Vector2f(windowWidth / (2 * ZOOM), windowHeight));
-    camera.view.zoom(1.0f/ZOOM);
-
+    Camera camera(&window, ZOOM);
     sf::View view = camera.getView();
     window.setView(view);
+
+    float screenYTop;
+    float screenXCenter;
+
 
     // ----- Text ----- //
     sf::Font arial;
@@ -71,8 +63,6 @@ int main()
     depthText.setCharacterSize(24);
     depthText.setFillColor(Color::White);
 
-    // ----- Player ----- //
-    Player player(windowWidth / 2, windowHeight / 2, &world, "resources/player_spritesheet.png");
 
     // ----- Clock ----- //
     Clock clock;
@@ -80,12 +70,8 @@ int main()
     float oldtime;
     float deltaTime;
 
-    // Prepare for simulation. Typically we use a time step of 60Hz and 10 iterations. 
-    // This provides a high quality simulation in most game scenarios.
-    float timeStep = 1.0f / MAX_FPS;
-    int32 velocityIterations = 10;
-    int32 positionIterations = 10;
 
+    // ----- Main Window Loop ----- //
     while (window.isOpen())
     {
         // ----- Clock Management ----- //
@@ -105,7 +91,7 @@ int main()
                     break;
                 case sf::Event::KeyPressed:
                 case sf::Event::KeyReleased:
-                    player.HandleInput(event);
+                    gameManager.HandleInput(event);
                     break;
 
                 default:
@@ -113,27 +99,26 @@ int main()
             }
         }
 
-        world.Step(timeStep, velocityIterations, positionIterations);
+        gameManager.Step();
 
         // ----- Window Update ----- //
         window.clear();
-        camera.update(player.getPosition().y, deltaTime);
+        camera.update(gameManager.PlayerYPos(), deltaTime);
         window.setView(camera.getView());
 
-        player.Update();
-        player.Animate(deltaTime);
-        tilemapManager.update(camera);
-        
-        window.draw(tilemapManager);
-        window.draw(player.getSprite());
 
-        //----- UI Display ---- //
+        // ----- Game Update ----- //
+        gameManager.Update(deltaTime, camera);
+        gameManager.Draw(&window);
+
+
+        // ----- UI Display ----- //
         view = camera.getView();
         view.zoom(ZOOM);
         window.setView(view);
 
-        auto screenYTop = window.getView().getCenter().y - windowHeight / 2;
-        auto screenXCenter = window.getView().getCenter().x;
+        screenYTop = window.getView().getCenter().y - windowHeight / 2;
+        screenXCenter = window.getView().getCenter().x;
 
         depth = (int) (camera.getOrigin().y / 10);
         depthText.setString(std::to_string(depth) + " M");
@@ -148,11 +133,13 @@ int main()
             debugText.setPosition(0, screenYTop);
             window.draw(debugText);
 
-            debugText.setString("y speed: " + std::to_string((int)player.getVerticalSpeed()));
+            debugText.setString("y : " + std::to_string(gameManager.PlayerYPos()));
             debugText.setPosition(0, screenYTop + debugText.getCharacterSize());
             window.draw(debugText);
         }
 
+
+        // ----- Window Display ----- //
         window.display();
     }
 

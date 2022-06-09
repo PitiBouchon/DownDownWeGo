@@ -1,6 +1,6 @@
 file(GLOB SOURCES CONFIGURE_DEPENDS *.h *.cpp Tile/*.h Tile/*.cpp)
 
-add_executable(src ${SOURCES})
+add_executable(src ${SOURCES} "gameManager.h")
 
 target_link_libraries(src PUBLIC fmt box2d sfml-graphics tmxlite)
 

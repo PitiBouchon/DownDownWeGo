@@ -22,9 +22,19 @@ Player::Player(float xpos, float ypos, b2World *world, const std::string& image)
     rb.setCollisionDetection(this);
 }
 
-const sf::Sprite & Player::getSprite()
+sf::Vector2f Player::getPosition() const
 {
-    auto textureRect = sf::IntRect(frame * spriteSize, (int) state * spriteSize, spriteSize, spriteSize);
+    return rb.getPixelPos();
+}
+
+float Player::getVerticalSpeed() const
+{
+    return rb.getVelocity().y;
+}
+
+sf::Sprite& Player::getSprite()
+{
+    auto textureRect = sf::IntRect(frame * spriteSize, (int)state * spriteSize, spriteSize, spriteSize);
     if (dir == Direction::LEFT)
     {
         textureRect.left += spriteSize;
@@ -36,16 +46,6 @@ const sf::Sprite & Player::getSprite()
     sprite.setPosition(pos.x, pos.y);
     sprite.setRotation(rb.getAngle());
     return sprite;
-}
-
-sf::Vector2f Player::getPosition() const
-{
-    return rb.getPixelPos();
-}
-
-float Player::getVerticalSpeed() const
-{
-    return rb.getVelocity().y;
 }
 
 void Player::Animate(float deltaTime)
@@ -72,6 +72,7 @@ void Player::ChangeState(States newState)
     case States::CLIMB: std::cout << "CLIMB\n"; break;
     case States::JUMP: std::cout << "JUMP\n"; break;
     case States::FALL: std::cout << "FALL\n"; break;
+    case States::DEATH: std::cout << "DEATH\n"; break;
     default: std::cout << "ERROR\n"; break;
     }
 }
@@ -183,8 +184,7 @@ void Player::BeginCollision(b2Contact *contact)
     {
         if (rb.getVelocity().y >= LETHAL_SPEED)
         {
-            // Die here
-            printf("PLAYER IS DEAD !\n");
+            ChangeState(States::DEATH);
         }
 
         Land();

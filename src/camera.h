@@ -9,13 +9,13 @@
 class Camera {
 private :
     const float cameraSmoothSpeed = 1.3f;
-    const float cameraFallSpeed = 25;
+    const float cameraFallSpeed = 0;
     const float moveThreshold = 100;
 
 public:
     sf::View view;
 
-    Camera(const sf::RenderWindow *window);
+    Camera(const sf::RenderWindow *window, float zoom);
 
     void move(sf::Vector2f dir);
     void moveTo(sf::Vector2f pos);

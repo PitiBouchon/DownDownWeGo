@@ -47,7 +47,7 @@ public:
     sf::Vector2f getPosition() const;
     float getVerticalSpeed() const;
 
-    const sf::Sprite& getSprite();
+    sf::Sprite& getSprite();
     void Animate(float deltaTime);
     void ChangeState(States newState);
 

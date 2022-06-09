@@ -19,6 +19,7 @@ MyTilemap::MyTilemap(const tmx::Map &map, b2World *world, sf::Vector2f offset) {
             map_layer->addOffset(offset);
             tile_layers.push_back(std::move(map_layer));
             
+            //Adds a rigidbody for every tile placed in the "Collision" layer of the map
             if (tile_layer.getName() == "Collision")
             {
                 int counter = 0;

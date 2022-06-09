@@ -14,9 +14,6 @@ private:
     std::vector<std::string> paths;
     b2World *world;
 
-    float mapHeight;
-    float mapWidth;
-
 public:
     TilemapManager(const std::string& maps_path, b2World *world);
     void draw(sf::RenderTarget& rt, sf::RenderStates states) const override;

@@ -2,9 +2,11 @@
 #include "player.h"
 #include <iostream>
 
-Camera::Camera(const sf::RenderWindow *window) : view(window->getDefaultView())
+Camera::Camera(const sf::RenderWindow *window, float zoom) : view(window->getDefaultView())
 {
-    view.zoom(2.0f);
+    view.setSize(sf::Vector2f(window->getSize()));
+    view.setCenter(sf::Vector2f(window->getSize().x / (2 * zoom), window->getSize().y));
+    view.zoom(1.0f / zoom);
 }
 
 void Camera::move(sf::Vector2f dir)
