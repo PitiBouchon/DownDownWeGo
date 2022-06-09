@@ -22,13 +22,18 @@ private:
 	TilemapManager tmxManager;
 	Player player;
 
+	bool isPaused = false;
+
 public:
 	explicit GameManager(float timeStep);
 
-	void Step();
-	void Update(float deltaTime, const Camera& camera);
-	void Draw(sf::RenderWindow* window);
+	void Update(const Camera& camera);
+	void Draw(sf::RenderWindow* window, float deltaTime);
 	void HandleInput(sf::Event event);
+
+	void Pause();
+	void Resume();
+	bool isRunning() const;
 
 	float getMapWidth() const;
 	float getMapHeight() const;

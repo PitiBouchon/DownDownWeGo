@@ -1,15 +1,10 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <box2d/box2d.h>
 #include <iostream>
 #include <fmt/core.h>
-#include <tmxlite/Map.hpp>
-#include "Tile/SFMLOrthogonalLayer.h"
 #include "gameManager.h"
-#include "player.h"
 #include "camera.h"
-#include "myContactListener.h"
-#include "Tile/myTilemap.h"
-#include "Tile/tilemapManager.h"
 
 
 // ----- GLOBAL PARAMETERS ----- //
@@ -43,6 +38,13 @@ int main()
     float screenYTop;
     float screenXCenter;
 
+    
+    // ----- Music ----- //
+    /* Include Music.hpp LNK 2019 error : needs solving
+    sf::Music BGM;
+    if (!BGM.openFromFile("resources/trippin-ost.wav")) return -1; // error
+    BGM.play();
+    */
 
     // ----- Text ----- //
     sf::Font arial;
@@ -84,32 +86,23 @@ int main()
 	    sf::Event event{};
 	    while (window.pollEvent(event))
         {
-            switch (event.type)
-            {
-                case sf::Event::Closed:
-                    window.close();
-                    break;
-                case sf::Event::KeyPressed:
-                case sf::Event::KeyReleased:
-                    gameManager.HandleInput(event);
-                    break;
-
-                default:
-                    break;
-            }
+            if (event.type == sf::Event::Closed) window.close();
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) gameManager.Pause();
         }
-
-        gameManager.Step();
 
         // ----- Window Update ----- //
         window.clear();
-        camera.update(gameManager.PlayerYPos(), deltaTime);
+        camera.update(deltaTime, gameManager.PlayerYPos(), gameManager.isRunning());
         window.setView(camera.getView());
 
 
         // ----- Game Update ----- //
-        gameManager.Update(deltaTime, camera);
-        gameManager.Draw(&window);
+        if (gameManager.isRunning())
+        {
+            gameManager.HandleInput(event);
+            gameManager.Update(camera);
+        }
+        gameManager.Draw(&window, deltaTime);
 
 
         // ----- UI Display ----- //
@@ -133,7 +126,7 @@ int main()
             debugText.setPosition(0, screenYTop);
             window.draw(debugText);
 
-            debugText.setString("y : " + std::to_string(gameManager.PlayerYPos()));
+            debugText.setString("ySpeed : " + std::to_string(gameManager.PlayerYSpeed()));
             debugText.setPosition(0, screenYTop + debugText.getCharacterSize());
             window.draw(debugText);
         }

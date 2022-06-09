@@ -12,20 +12,16 @@ GameManager::GameManager(float timeStep) :
     world.SetContactListener(&listener);
 }
 
-void GameManager::Step()
+void GameManager::Update(const Camera& camera)
 {
     world.Step(timeStep, velocityIterations, positionIterations);
-}
-
-void GameManager::Update(float deltaTime, const Camera& camera)
-{
-    player.Update();
-    player.Animate(deltaTime);
+    player.Update(camera.DistanceToPlayer());
     tmxManager.update(camera);
 }
 
-void GameManager::Draw(sf::RenderWindow* window)
+void GameManager::Draw(sf::RenderWindow* window, float deltaTime)
 {
+    player.Animate(deltaTime);
     window->draw(tmxManager);
     window->draw(player.getSprite());
 }
@@ -35,6 +31,21 @@ void GameManager::HandleInput(sf::Event event)
     player.HandleInput(event);
 }
 
+
+void GameManager::Pause()
+{
+    isPaused = true;
+}
+
+void GameManager::Resume()
+{
+    isPaused = false;
+}
+
+bool GameManager::isRunning() const
+{
+    return !player.isDead() && !isPaused;
+}
 
 float GameManager::getMapWidth() const
 {

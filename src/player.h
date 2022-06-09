@@ -26,7 +26,7 @@ private:
     const float MAX_ENDURANCE = 20;
     float endurance = MAX_ENDURANCE;
 
-    const float LETHAL_SPEED = 50;
+    const float LETHAL_SPEED = 35;
     const float JUMP_HEIGHT = 10;
     const float BASE_SPEED = 7;
 
@@ -43,9 +43,6 @@ private:
 public:
     Player(float xpos, float ypos, b2World *world, const std::string& image);
     virtual ~Player() = default;
-    
-    sf::Vector2f getPosition() const;
-    float getVerticalSpeed() const;
 
     sf::Sprite& getSprite();
     void Animate(float deltaTime);
@@ -61,7 +58,11 @@ public:
     void HandleInput(sf::Event event);
     void HandleKeyPressed(Command command);
     void HandleKeyReleased(Command command);
-    void Update();
+    void Update(float distanceToCamera);
 
     void BeginCollision(b2Contact *contact) override;
+
+    sf::Vector2f getPosition() const;
+    float getVerticalSpeed() const;
+    bool isDead() const;
 };

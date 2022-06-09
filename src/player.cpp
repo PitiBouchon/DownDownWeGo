@@ -22,16 +22,6 @@ Player::Player(float xpos, float ypos, b2World *world, const std::string& image)
     rb.setCollisionDetection(this);
 }
 
-sf::Vector2f Player::getPosition() const
-{
-    return rb.getPixelPos();
-}
-
-float Player::getVerticalSpeed() const
-{
-    return rb.getVelocity().y;
-}
-
 sf::Sprite& Player::getSprite()
 {
     auto textureRect = sf::IntRect(frame * spriteSize, (int)state * spriteSize, spriteSize, spriteSize);
@@ -55,13 +45,13 @@ void Player::Animate(float deltaTime)
     {
         animationClock = 0;
         frame++;
-        if (frame >= frames[(int)state]) frame = 0;
+        if (frame >= frames[(int)state] && state != States::DEATH) frame = 0;
     }
 }
 
 void Player::ChangeState(States newState)
 {
-    if (newState == state) return;
+    if (newState == state || state == States::DEATH) return;
 
     frame = 0;
     state = newState;
@@ -158,7 +148,7 @@ void Player::HandleKeyReleased(Command command)
 }
 
 
-void Player::Update()
+void Player::Update(float distanceToCamera)
 {
     b2Vec2 b2Velocity = rb.getVelocity();
     if (state == States::CLIMB)
@@ -175,6 +165,8 @@ void Player::Update()
             onGround = false;
         }
     }
+
+    if (distanceToCamera < 0) ChangeState(States::DEATH);
 }
 
 
@@ -182,11 +174,27 @@ void Player::BeginCollision(b2Contact *contact)
 {
     if (contact->GetManifold()->localNormal.y > 0)
     {
+        std::cout << rb.getVelocity().y << std::endl;
         if (rb.getVelocity().y >= LETHAL_SPEED)
         {
             ChangeState(States::DEATH);
         }
-
-        Land();
+        else Land();
     }
+}
+
+
+sf::Vector2f Player::getPosition() const
+{
+    return rb.getPixelPos();
+}
+
+float Player::getVerticalSpeed() const
+{
+    return rb.getVelocity().y;
+}
+
+bool Player::isDead() const
+{
+    return state == States::DEATH;
 }

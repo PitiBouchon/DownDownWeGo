@@ -8,24 +8,30 @@
 
 class Camera {
 private :
-    const float cameraSmoothSpeed = 1.3f;
-    const float cameraFallSpeed = 0;
+    const float fallAcceleration = 1;
+    const float maxFallSpeed = 40;
+    float fallSpeed = 15;
+
+    const float smoothSpeed = 1.3f;
     const float moveThreshold = 100;
 
-public:
+    float distanceToPlayer;
     sf::View view;
 
+public:
     Camera(const sf::RenderWindow *window, float zoom);
 
     void move(sf::Vector2f dir);
     void moveTo(sf::Vector2f pos);
-    void update(float playerPosition, float deltaTime);
+    void update(float deltaTime, float playerPosition, bool gameRunning);
     
     sf::Vector2f const & getPosition() const;
     sf::Vector2f const & getSize() const;
     sf::Vector2f getOrigin() const;
     sf::Vector2f getCenter() const;
     sf::View const & getView() const;
+
+    float DistanceToPlayer() const;
 };
 
 
