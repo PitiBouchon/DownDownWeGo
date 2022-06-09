@@ -55,16 +55,6 @@ void Player::ChangeState(States newState)
 
     frame = 0;
     state = newState;
-    
-    switch (state) {
-    case States::IDLE: std::cout << "IDLE\n"; break;
-    case States::WALK: std::cout << "WALK\n"; break;
-    case States::CLIMB: std::cout << "CLIMB\n"; break;
-    case States::JUMP: std::cout << "JUMP\n"; break;
-    case States::FALL: std::cout << "FALL\n"; break;
-    case States::DEATH: std::cout << "DEATH\n"; break;
-    default: std::cout << "ERROR\n"; break;
-    }
 }
 
 void Player::RefillEndurance() {
@@ -161,15 +151,9 @@ void Player::Update(float distanceToCamera)
     if (state == States::CLIMB)
     {
         rb.setVelocity(b2Vec2(0, std::min(b2Velocity.y, GRAB_SPEED)));
-        Exhaust(0.1f);
-        if (!HasEndurance())
+        Exhaust(1.0f);
+        if (!HasEndurance() || !onWall)
         {  
-            std::cout << "No Endurance!\n";
-            ChangeState(States::FALL);
-        }
-        if (!onWall)
-        {
-            std::cout << "No Wall!\n";
             ChangeState(States::FALL);
         }
     }
@@ -193,7 +177,6 @@ void Player::BeginCollision(b2Contact *contact)
 {
     if (contact->GetManifold()->localNormal.y > 0)
     {
-        std::cout << rb.getVelocity().y << std::endl;
         if (rb.getVelocity().y >= LETHAL_SPEED)
         {
             ChangeState(States::DEATH);
@@ -203,24 +186,14 @@ void Player::BeginCollision(b2Contact *contact)
 
     if (contact->GetManifold()->localNormal.x != 0)
     {
-        std::cout << "Touching Wall\n";
         onWall = true;
     }
 }
 
 void Player::EndCollision(b2Contact* contact)
 {
-    //Note: you could replace our State shenanigans in Update by putting something here:
-    /*
-    if (contact->GetManifold()->localNormal.y > 0)
-    {
-        FALL or something, idk
-    }
-    */
-
     if (contact->GetManifold()->localNormal.x != 0)
     {
-        std::cout << "Not touching Wall anymore\n";
         onWall = false;
     }
 }

@@ -23,7 +23,7 @@ private:
     std::array<int, 6> frames = { 4, 6, 4, 8, 4, 8 };
     float animationClock = 0;
 
-    const float MAX_ENDURANCE = 20;
+    const float MAX_ENDURANCE = 200;
     float endurance = MAX_ENDURANCE;
 
     const float LETHAL_SPEED = 100;
