@@ -28,10 +28,11 @@ private:
     const float LETHAL_SPEED = 100;
     const float JUMP_HEIGHT = 25;
     const float BASE_SPEED = 7;
-    const float GRAB_SPEED = 3;
+    const float GRAB_SPEED = 0.5;
 
     float xInput = 0;
     bool onGround = false;
+    bool onWall = false;
 
     Rigidbody rb;
 
@@ -60,4 +61,5 @@ public:
     void Update();
 
     void BeginCollision(b2Contact *contact) override;
+    void EndCollision(b2Contact* contact) override;
 };

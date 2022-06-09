@@ -128,7 +128,7 @@ void Player::HandleKeyPressed(Command command)
     {
         Jump();
     }
-    else if (command == Command::GRAB && HasEndurance())
+    else if (command == Command::GRAB && HasEndurance() && onWall)
     {
         onGround = true;
         ChangeState(States::CLIMB);
@@ -151,8 +151,9 @@ void Player::HandleKeyReleased(Command command)
 
 void Player::Update()
 {
-    
     b2Vec2 b2Velocity = rb.getVelocity();
+
+
     if (state == States::CLIMB)
     {
         rb.setVelocity(b2Vec2(0, std::min(b2Velocity.y, GRAB_SPEED)));
@@ -160,6 +161,11 @@ void Player::Update()
         if (!HasEndurance())
         {  
             std::cout << "No Endurance!\n";
+            ChangeState(States::FALL);
+        }
+        if (!onWall)
+        {
+            std::cout << "No Wall!\n";
             ChangeState(States::FALL);
         }
     }
@@ -188,5 +194,28 @@ void Player::BeginCollision(b2Contact *contact)
         }
 
         Land();
+    }
+
+    if (contact->GetManifold()->localNormal.x != 0)
+    {
+        std::cout << "Touching Wall\n";
+        onWall = true;
+    }
+}
+
+void Player::EndCollision(b2Contact* contact)
+{
+    //Note: you could replace our State shenanigans in Update by putting something here:
+    /*
+    if (contact->GetManifold()->localNormal.y > 0)
+    {
+        FALL or something, idk
+    }
+    */
+
+    if (contact->GetManifold()->localNormal.x != 0)
+    {
+        std::cout << "Not touching Wall anymore\n";
+        onWall = false;
     }
 }
