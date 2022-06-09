@@ -126,10 +126,9 @@ void Player::HandleKeyPressed(Command command)
     {
         Jump();
     }
-    else if (command == Command::GRAB && HasEndurance() && onWall)
+    else if (command == Command::GRAB)
     {
-        onGround = true;
-        ChangeState(States::CLIMB);
+        grabbing = true;
     }
 }
 
@@ -142,6 +141,7 @@ void Player::HandleKeyReleased(Command command)
     }
     else if (command == Command::GRAB)
     {
+        grabbing = false;
         ChangeState(States::FALL);
         onGround = false;
     }
@@ -152,6 +152,11 @@ void Player::Update(float distanceToCamera)
 {
     b2Vec2 b2Velocity = rb.getVelocity();
 
+    if (grabbing && HasEndurance() && onWall)
+    {
+        onGround = true;
+        ChangeState(States::CLIMB);
+    }
 
     if (state == States::CLIMB)
     {

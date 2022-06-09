@@ -34,6 +34,7 @@ private:
     float xInput = 0;
     bool onGround = false;
     bool onWall = false;
+    bool grabbing = false;
 
     Rigidbody rb;
 
