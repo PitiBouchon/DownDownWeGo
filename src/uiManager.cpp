@@ -3,15 +3,15 @@
 
 UIManager::UIManager()
 {
-	uiFont.loadFromFile("resources/adventures.ttf");
+	uiFont.loadFromFile(uiFontPath);
 	uiText.setFont(uiFont);
 	uiText.setCharacterSize(uiFontSize);
-	uiText.setFillColor(sf::Color::White);
+	uiText.setFillColor(uiColor);
 
-	debugFont.loadFromFile("resources/arial.ttf");
+	debugFont.loadFromFile(debugFontPath);
 	debugText.setFont(debugFont);
     debugText.setCharacterSize(debugFontSize);
-    debugText.setFillColor(sf::Color::Red);
+    debugText.setFillColor(debugColor);
 }
 
 
@@ -20,7 +20,6 @@ void UIManager::Draw(sf::RenderWindow * window, const sf::View& cameraView, cons
     screenXCenter = window->getView().getCenter().x;
     screenYTop = window->getView().getCenter().y - window->getSize().y / 2.0f;
 
-    // ----- UI Display ----- //
     sf::View view = cameraView;
     view.zoom(zoom);
     window->setView(view);
@@ -40,4 +39,21 @@ void UIManager::Draw(sf::RenderWindow * window, const sf::View& cameraView, cons
         debugText.setPosition(0, screenYTop + debugText.getCharacterSize());
         window->draw(debugText);
     }
+}
+
+void UIManager::GameOver(sf::RenderWindow* window, const sf::View& cameraView, const float zoom, const int score)
+{
+    sf::View view = cameraView;
+    view.zoom(zoom);
+    window->setView(view);
+
+    gameOverText = "Game Over\n";
+    uiText.setString(gameOverText);
+    uiText.setPosition(window->getView().getCenter().x - uiText.getLocalBounds().width / 2, window->getView().getCenter().y - uiText.getCharacterSize());
+    window->draw(uiText);
+
+    gameOverText = "You traveled " + std::to_string(score) + " M";
+    uiText.setString(gameOverText);
+    uiText.setPosition(window->getView().getCenter().x - uiText.getLocalBounds().width / 2, window->getView().getCenter().y + uiText.getCharacterSize());
+    window->draw(uiText);
 }

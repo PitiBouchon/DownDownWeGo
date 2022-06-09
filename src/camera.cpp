@@ -22,16 +22,19 @@ void Camera::moveTo(sf::Vector2f pos)
 
 void Camera::update(float deltaTime, float playerPosY, bool gameRunning)
 {
-    fallSpeed += fallAcceleration * deltaTime;
-    if (fallSpeed > maxFallSpeed) fallSpeed = maxFallSpeed;
-
     distanceToPlayer = playerPosY - getPosition().y + getSize().y / 2;
 
     if (getSize().y - distanceToPlayer < moveThreshold )
     {
         view.move(0.0f, distanceToPlayer * smoothSpeed * deltaTime);
     }
-    else if (gameRunning) view.move(0, fallSpeed * deltaTime);
+    else if (gameRunning)
+    {
+        fallSpeed += fallAcceleration * deltaTime;
+        if (fallSpeed > maxFallSpeed) fallSpeed = maxFallSpeed;
+
+        view.move(0, fallSpeed * deltaTime);
+    }
 }
 
 

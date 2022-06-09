@@ -10,10 +10,10 @@ class Camera {
 private :
     const float fallAcceleration = 2.5;
     const float maxFallSpeed = 500;
-    float fallSpeed = 10;
+    float fallSpeed = 25;
 
     const float smoothSpeed = 1.3f;
-    const float moveThreshold = 300;
+    const float moveThreshold = 250;
 
     float distanceToPlayer = 0;
     sf::View view;

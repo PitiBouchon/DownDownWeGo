@@ -21,19 +21,40 @@ void GameManager::SetWindow(sf::RenderWindow* window_p)
 }
 
 
+void GameManager::Pause(sf::Music* music)
+{
+    paused = !paused;
+    if (paused) music->pause();
+    else music->play();
+}
+
+bool GameManager::isRunning() const
+{
+    return !player.isDead() && !paused;
+}
+
+
 void GameManager::Update()
 {
-    world.Step(timeStep, velocityIterations, positionIterations);
-    player.Update(camera.DistanceToPlayer());
+    if (isRunning())
+    {
+        world.Step(timeStep, velocityIterations, positionIterations);
+        player.Update(camera.DistanceToPlayer());
+    }
     tmxManager.update(camera);
 }
 
 void GameManager::DisplayUI(float deltaTime)
 {
-    score = (int)(camera.getOrigin().y / 10);
+    score = camera.getOrigin().y / 10;
     fps = std::min(MAX_FPS, (int)(1 / deltaTime));
     std::string gameInfo = "fallSpeed : " + std::to_string(camera.FallSpeed());
     uiManager.Draw(window, camera.getView(), cameraZoom, score, fps, gameInfo);
+}
+
+void GameManager::DisplayGameOver()
+{
+    uiManager.GameOver(window, camera.getView(), cameraZoom, score);
 }
 
 void GameManager::Draw(float deltaTime)
@@ -41,28 +62,14 @@ void GameManager::Draw(float deltaTime)
     player.Animate(deltaTime);
     window->draw(tmxManager);
     window->draw(player.getSprite());
-    DisplayUI(deltaTime);
+
+    if (!player.isDead()) DisplayUI(deltaTime);
+    else DisplayGameOver();
 }
 
 void GameManager::HandleInput(sf::Event event)
 {
-    player.HandleInput(event);
-}
-
-
-void GameManager::Pause()
-{
-    isPaused = true;
-}
-
-void GameManager::Resume()
-{
-    isPaused = false;
-}
-
-bool GameManager::isRunning() const
-{
-    return !player.isDead() && !isPaused;
+    if (isRunning()) player.HandleInput(event);
 }
 
 

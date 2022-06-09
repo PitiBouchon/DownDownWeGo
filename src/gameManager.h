@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <box2d/box2d.h>
 #include <iostream>
 #include <fmt/core.h>
@@ -33,21 +34,21 @@ private:
 	const int MAX_FPS;
 	int fps = 0;
 
-	bool isPaused = false;
+	bool paused = false;
 	int score = 0;
 
 public:
 	GameManager(float cameraZoom, int maxFps);
 	void SetWindow(sf::RenderWindow* window_p);
 
+	void Pause(sf::Music* music);
+	bool isRunning() const;
+
 	void Update();
 	void DisplayUI(float deltaTime);
+	void DisplayGameOver();
 	void Draw(float deltaTime);
 	void HandleInput(sf::Event event);
-
-	void Pause();
-	void Resume();
-	bool isRunning() const;
 
 	void UpdateCamera(float deltaTime);
 	sf::View getCameraView() const;

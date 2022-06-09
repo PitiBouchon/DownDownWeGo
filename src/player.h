@@ -26,7 +26,7 @@ private:
     const float MAX_ENDURANCE = 20;
     float endurance = MAX_ENDURANCE;
 
-    const float LETHAL_SPEED = 100;
+    const float LETHAL_SPEED = 35;
     const float JUMP_HEIGHT = 12;
     const float BASE_SPEED = 7;
     const float GRAB_SPEED = 0.5;

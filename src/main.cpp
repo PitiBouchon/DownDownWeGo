@@ -72,15 +72,13 @@ int main()
 	    while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed) window.close();
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) gameManager.Pause();
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) gameManager.Pause(&BGM);
             if (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) gameManager.HandleInput(event);
         }
 
+
         // ----- Game Update ----- //
-        if (gameManager.isRunning()) gameManager.Update();
-
-
-        // ----- Window Display ----- //
+        gameManager.Update();
         gameManager.Draw(deltaTime);
         window.display();
     }

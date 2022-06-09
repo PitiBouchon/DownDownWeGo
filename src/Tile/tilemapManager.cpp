@@ -46,7 +46,7 @@ void TilemapManager::update(const Camera &camera)
 {
     auto *mt = &displayed_maps[index_map_to_change];
 
-    if (mt->getBounds().top + mt->getBounds().height < camera.getPosition().y - camera.getSize().y)
+    while (mt->getBounds().top + mt->getBounds().height < camera.getPosition().y - camera.getSize().y)
     {
         std::string path = paths[rand() % paths.size()];
         tmx::Map map;
@@ -69,6 +69,7 @@ void TilemapManager::update(const Camera &camera)
 
         index_map_to_change++;
         index_map_to_change %= displayed_maps.size();
+        mt = &displayed_maps[index_map_to_change];
     }
 }
 
