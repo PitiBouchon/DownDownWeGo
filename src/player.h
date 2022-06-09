@@ -37,6 +37,7 @@ private:
     bool grabbing = false;
 
     Rigidbody rb;
+    b2Vec2 b2Velocity = b2Vec2_zero;
 
     Direction dir = Direction::RIGHT;
     enum States state = States::IDLE;

@@ -140,7 +140,7 @@ void Player::HandleKeyReleased(Command command)
 
 void Player::Update(float distanceToCamera)
 {
-    b2Vec2 b2Velocity = rb.getVelocity();
+    b2Velocity = rb.getVelocity();
 
     if (grabbing && HasEndurance() && onWall)
     {

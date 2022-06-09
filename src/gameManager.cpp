@@ -1,7 +1,7 @@
 #include "gameManager.h"
 #include "myContactListener.h"
 
-const std::string absolutePath = "C:/Users/marti/CSC4508-Projet/DownDownWeGo/";
+const std::string absolutePath = "C:/Users/clemence/Documents/Travail/TSP/CSC4526_Cpp/Projet/DownDownWeGo/";
 
 GameManager::GameManager(float cameraZoom, int maxFps) :
     timeStep(1.0f/maxFps),
