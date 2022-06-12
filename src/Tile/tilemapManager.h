@@ -7,6 +7,7 @@
 #include "../camera.h"
 #include <filesystem>
 
+/// Used to manage multiple tilemap and circle around
 class TilemapManager : public sf::Drawable {
 private:
     std::array<MyTilemap, 5> displayed_maps;

@@ -6,6 +6,7 @@
 
 // https://www.sfml-dev.org/tutorials/2.5/graphics-view.php for more information
 
+/// Wrapper for sf::View
 class Camera {
 private :
     const float fallAcceleration = 2.5;
