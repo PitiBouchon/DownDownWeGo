@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fmt/core.h>
 #include "gameManager.h"
+#include <WinUser.h>
 
 
 // ----- GLOBAL PARAMETERS ----- //
@@ -18,6 +19,8 @@ using namespace sf;
 
 int main()
 {
+    ShowWindow(GetConsoleWindow(), SW_SHOW);
+
     // ----- Game Manager ----- //
     GameManager gameManager(ZOOM, MAX_FPS);
     auto windowSize = sf::Vector2u(ZOOM * gameManager.getMapWidth(), 2 * ZOOM * gameManager.getMapHeight());
@@ -37,7 +40,7 @@ int main()
 
     // ----- Music ----- //
     sf::Music BGM;
-    if (!BGM.openFromFile("resources/trippin-ost.wav")) return -1;
+    if (!BGM.openFromFile("resources/music/trippin-ost.wav")) return -1;
     BGM.setLoop(true);
 
     float volume = 100;

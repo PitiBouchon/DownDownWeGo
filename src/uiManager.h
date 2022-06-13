@@ -3,7 +3,7 @@
 
 class UIManager {
 private:
-	const bool debug = false;
+	const bool debug = true;
 	float screenXCenter = 0;
 	float screenYTop = 0;
 
@@ -13,7 +13,7 @@ private:
 
 	const int uiFontSize = 24;
 	const sf::Color uiColor = sf::Color::White;
-	std::string uiFontPath = "resources/adventures.ttf";
+	std::string uiFontPath = "resources/fonts/adventures.ttf";
 
 	//Debug Text
 	sf::Text debugText;
@@ -21,7 +21,7 @@ private:
 
 	const int debugFontSize = 20;
 	const sf::Color debugColor = sf::Color::Red;
-	std::string debugFontPath = "resources/arial.ttf";
+	std::string debugFontPath = "resources/fonts/arial.ttf";
 
 	std::string gameOverText;
 

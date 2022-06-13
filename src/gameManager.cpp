@@ -7,7 +7,7 @@ GameManager::GameManager(float cameraZoom, int maxFps) :
     timeStep(1.0f/maxFps),
     world(b2Vec2(0.0f, GRAVITY)),
     tmxManager(absolutePath + "resources/maps/", &world),
-    player(tmxManager.getMapWidth() / 2, tmxManager.getMapHeight() * 3, &world, "resources/player_spritesheet.png"),
+    player(tmxManager.getMapWidth() / 4, tmxManager.getMapHeight() / 2, &world, "resources/sprites/player_spritesheet.png"),
     cameraZoom(cameraZoom),
     MAX_FPS(maxFps)
 {
@@ -33,20 +33,26 @@ bool GameManager::isRunning() const
     return !player.isDead() && !paused;
 }
 
+int GameManager::GetZone()
+{
+    return score * 0 + 1;
+}
 
 void GameManager::Update()
 {
     if (isRunning())
     {
+        score = camera.getOrigin().y / 10;
+        zone = GetZone();
+
         world.Step(timeStep, velocityIterations, positionIterations);
         player.Update(camera.DistanceToPlayer());
+        tmxManager.update(camera, zone);
     }
-    tmxManager.update(camera);
 }
 
 void GameManager::DisplayUI(float deltaTime)
 {
-    score = camera.getOrigin().y / 10;
     fps = std::min(MAX_FPS, (int)(1 / deltaTime));
     std::string gameInfo = "fallSpeed : " + std::to_string(camera.FallSpeed());
     uiManager.Draw(window, camera.getView(), cameraZoom, score, fps, gameInfo);

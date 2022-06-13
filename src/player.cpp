@@ -161,7 +161,7 @@ void Player::Update(float distanceToCamera)
     {
         rb.setVelocity(b2Vec2(xInput * BASE_SPEED, b2Velocity.y));
 
-        if (b2Velocity.y == 0) { if (!onGround) Land(); }
+        if (b2Velocity.y == 0) { if (!onGround) { std::cout << "LAND\n"; Land(); } }
         else
         {
             ChangeState(States::FALL);
@@ -175,7 +175,7 @@ void Player::Update(float distanceToCamera)
 
 void Player::BeginCollision(b2Contact *contact)
 {
-    if (contact->GetManifold()->localNormal.y > 0)
+    if (contact->GetManifold()->localNormal.y >= 0)
     {
         if (rb.getVelocity().y >= LETHAL_SPEED)
         {

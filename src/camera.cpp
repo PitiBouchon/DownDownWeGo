@@ -6,7 +6,7 @@
 void Camera::SetWindow(const sf::RenderWindow* window, float zoom)
 {
     view.setSize(sf::Vector2f(window->getSize()));
-    view.setCenter(sf::Vector2f(window->getSize().x / (2 * zoom), window->getSize().y));
+    view.setCenter(sf::Vector2f(window->getSize().x / (2 * zoom), window->getSize().y / (2 * zoom)));
     view.zoom(1.0f / zoom);
 }
 

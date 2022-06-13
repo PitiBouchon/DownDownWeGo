@@ -35,6 +35,7 @@ private:
 	int fps = 0;
 
 	bool paused = false;
+	int zone = 1;
 	int score = 0;
 
 public:
@@ -43,6 +44,7 @@ public:
 
 	void Pause(sf::Music* music);
 	bool isRunning() const;
+	int GetZone();
 
 	void Update();
 	void DisplayUI(float deltaTime);
