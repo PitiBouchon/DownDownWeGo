@@ -5,7 +5,7 @@
 #include <unordered_set>
 
 MyTilemap::MyTilemap(const tmx::Map &map, b2World *world, sf::Vector2f offset) {
-
+    // Loop over each layer of the tilemap
     for (int index = 0; index < map.getLayers().size(); index++) {
         
         auto const &layer = map.getLayers()[index];

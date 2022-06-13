@@ -13,13 +13,16 @@
 #include <iostream>
 #include <cmath>
 
+/// Used as a wrapper for MapLayer (defined in SFMLOrthogonalLayer.h) and adding physics
+/// for each tile of the layer named Collisionusing box2d
 class MyTilemap : public sf::Drawable {
 private:
     std::vector<std::unique_ptr<MapLayer>> tile_layers;
 public:
     MyTilemap() = default;
     MyTilemap(const tmx::Map& map, b2World *world, sf::Vector2f offset);
-    
+
+    /// Offset is used to place a tilemap at a location
     void addOffset(sf::Vector2f offset) const;
     sf::FloatRect getBounds() const;
 

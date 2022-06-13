@@ -2,7 +2,7 @@
 #include <random>
 #include <string>
 
-/// <summary>Generates a random integer between provided values (included)</summary>
+/// <summary>Selects a random map among the ones corresponding to the current zone</summary>
 int TilemapManager::randomMap(int currentZone)
 {
     int minValue = indexZones[currentZone];

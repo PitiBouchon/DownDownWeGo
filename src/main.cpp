@@ -19,7 +19,7 @@ using namespace sf;
 
 int main()
 {
-    ShowWindow(GetConsoleWindow(), SW_SHOW);
+    ShowWindow(GetConsoleWindow(), SW_HIDE);
 
     // ----- Game Manager ----- //
     GameManager gameManager(ZOOM, MAX_FPS);
@@ -31,6 +31,10 @@ int main()
     window.setFramerateLimit(MAX_FPS);
     window.setKeyRepeatEnabled(false);
     window.setSize(windowSize);
+
+    sf::Image icon;
+    icon.loadFromFile("resources/sprites/icon.png");
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     sf::View view = gameManager.getCameraView();
     window.setView(view);

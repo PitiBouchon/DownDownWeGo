@@ -3,7 +3,7 @@
 
 class UIManager {
 private:
-	const bool debug = true;
+	const bool debug = false;
 	float screenXCenter = 0;
 	float screenYTop = 0;
 
