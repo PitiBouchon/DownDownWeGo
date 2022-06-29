@@ -34,16 +34,44 @@ Rigidbody::Rigidbody(b2World *world, b2BodyType type, const b2Shape* shape, cons
     SetBody(body, shape, pixelPos);
 }
 
-Rigidbody::Rigidbody(b2World* world, b2BodyType type, const sf::Vector2f shapeSize, const sf::Vector2f pixelPos)
+Rigidbody::Rigidbody(b2World* world, b2BodyType type, const sf::Vector2f shapeSize, const sf::Vector2f pixelPos, bool player)
 {
     b2BodyDef bodyDef;
     bodyDef.type = type;
 
-    b2PolygonShape dynamicBox;
-    dynamicBox.SetAsBox(toPhysic(shapeSize.x / 2), toPhysic(shapeSize.y / 2));
-
     body = world->CreateBody(&bodyDef);
-    SetBody(body, &dynamicBox, pixelPos);
+    if (player) {
+        b2CircleShape dynamicCircle;
+        dynamicCircle.m_p = b2Vec2(0, toPhysic(shapeSize.y / 2 - shapeSize.x / 2));//.SetAsBox(toPhysic(shapeSize.x / 2), toPhysic(shapeSize.y / 2));4
+        dynamicCircle.m_radius = toPhysic(shapeSize.x / 2);
+
+        b2FixtureDef fixtureDef1;
+        fixtureDef1.shape = &dynamicCircle;
+        fixtureDef1.density = 1.0f;
+        fixtureDef1.friction = 0.0f;
+
+        body->CreateFixture(&fixtureDef1);
+
+        b2CircleShape dynamicCircle2;
+        dynamicCircle.m_p = b2Vec2(0, toPhysic(-shapeSize.y / 2 + shapeSize.x / 2));//.SetAsBox(toPhysic(shapeSize.x / 2), toPhysic(shapeSize.y / 2));4
+        dynamicCircle.m_radius = toPhysic(shapeSize.x / 2);
+
+        b2FixtureDef fixtureDef2;
+        fixtureDef2.shape = &dynamicCircle2;
+        fixtureDef2.density = 1.0f;
+        fixtureDef2.friction = 0.0f;
+
+        body->CreateFixture(&fixtureDef2);
+
+        b2PolygonShape dynamicBox;
+        dynamicBox.SetAsBox(toPhysic(shapeSize.x / 2), toPhysic(shapeSize.y / 2 - shapeSize.x / 2));
+        SetBody(body, &dynamicBox, pixelPos);
+    }
+    else {
+        b2PolygonShape dynamicBox;
+        dynamicBox.SetAsBox(toPhysic(shapeSize.x / 2), toPhysic(shapeSize.y / 2));
+        SetBody(body, &dynamicBox, pixelPos);
+    }
 }
 
 sf::Vector2f Rigidbody::getPixelPos() const
