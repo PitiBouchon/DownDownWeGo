@@ -37,6 +37,7 @@ private:
 	bool paused = false;
 	int zone = 1;
 	int score = 0;
+	int depth = 0;
 
 public:
 	GameManager(float cameraZoom, int maxFps);
@@ -47,6 +48,7 @@ public:
 	int GetZone();
 
 	void Update();
+	void UpdateScore();
 	void DisplayUI(float deltaTime);
 	void DisplayGameOver();
 	void Draw(float deltaTime);

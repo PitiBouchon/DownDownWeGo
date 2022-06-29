@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <iostream>
 #include "player.h"
+#include "GameManager.h"
 
-Player::Player(float xpos, float ypos, b2World *world, const std::string& image)
+Player::Player(float xpos, float ypos, b2World *world, const std::string& image, GameManager& gameManager) :
+    gameManager(gameManager)
 {
     // Loading texture
     texture.loadFromFile(image);
@@ -87,6 +89,7 @@ void Player::Land()
     else ChangeState(States::WALK);
 
     RefillEndurance();
+    gameManager.UpdateScore();
 }
 
 void Player::HandleInput(sf::Event event)
@@ -161,8 +164,7 @@ void Player::Update(float distanceToCamera)
     {
         rb.setVelocity(b2Vec2(xInput * BASE_SPEED, b2Velocity.y));
 
-        if (b2Velocity.y == 0) { if (!onGround) { std::cout << "LAND\n"; Land(); } }
-        else
+        if (b2Velocity.y != 0)
         {
             ChangeState(States::FALL);
             onGround = false;
@@ -175,7 +177,7 @@ void Player::Update(float distanceToCamera)
 
 void Player::BeginCollision(b2Contact *contact)
 {
-    if (contact->GetManifold()->localNormal.y >= 0)
+   if (contact->GetManifold()->localNormal.y != 0)
     {
         if (rb.getVelocity().y >= LETHAL_SPEED)
         {
@@ -207,6 +209,11 @@ sf::Vector2f Player::getPosition() const
 float Player::getVerticalSpeed() const
 {
     return rb.getVelocity().y;
+}
+
+enum States Player::getState() const
+{
+    return state;
 }
 
 bool Player::isDead() const

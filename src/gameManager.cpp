@@ -1,13 +1,11 @@
 #include "gameManager.h"
 #include "myContactListener.h"
 
-const std::string absolutePath = "C:/Users/clemence/Documents/Travail/TSP/CSC4526_Cpp/Projet/DownDownWeGo/";
-
 GameManager::GameManager(float cameraZoom, int maxFps) :
     timeStep(1.0f/maxFps),
     world(b2Vec2(0.0f, GRAVITY)),
-    tmxManager(absolutePath + "resources/maps/", &world),
-    player(tmxManager.getMapWidth() / 4, tmxManager.getMapHeight() / 2, &world, "resources/sprites/player_spritesheet.png"),
+    tmxManager("resources/maps/", &world),
+    player(tmxManager.getMapWidth() / 4, tmxManager.getMapHeight() / 2, &world, "resources/sprites/player_spritesheet.png", *this),
     cameraZoom(cameraZoom),
     MAX_FPS(maxFps)
 {
@@ -35,27 +33,32 @@ bool GameManager::isRunning() const
 
 int GameManager::GetZone()
 {
-    return score * 0 + 1;
+    return depth * 0 + 1;
 }
 
 void GameManager::Update()
 {
     if (isRunning())
     {
-        score = camera.getOrigin().y / 10;
+        depth = camera.getOrigin().y / 10;
         zone = GetZone();
 
         world.Step(timeStep, velocityIterations, positionIterations);
         player.Update(camera.DistanceToPlayer());
-        tmxManager.update(camera, zone);
     }
+
+    tmxManager.update(camera, zone);
+}
+
+void GameManager::UpdateScore() {
+    score = depth;
 }
 
 void GameManager::DisplayUI(float deltaTime)
 {
     fps = std::min(MAX_FPS, (int)(1 / deltaTime));
     std::string gameInfo = "fallSpeed : " + std::to_string(camera.FallSpeed());
-    uiManager.Draw(window, camera.getView(), cameraZoom, score, fps, gameInfo);
+    uiManager.Draw(window, camera.getView(), cameraZoom, depth, fps, gameInfo);
 }
 
 void GameManager::DisplayGameOver()

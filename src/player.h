@@ -6,6 +6,7 @@
 #include "rigidbody.h"
 #include "collisionDetection.h"
 
+class GameManager;
 
 enum class Command { LEFT, RIGHT, JUMP, GRAB };
 
@@ -41,11 +42,12 @@ private:
 
     Direction dir = Direction::RIGHT;
     enum States state = States::IDLE;
+    GameManager& gameManager;
 
     std::map<sf::Keyboard::Key, Command> inputsMap;
 
 public:
-    Player(float xpos, float ypos, b2World *world, const std::string& image);
+    Player(float xpos, float ypos, b2World *world, const std::string& image, GameManager& gameManager);
     virtual ~Player() = default;
 
     sf::Sprite& getSprite();
@@ -69,5 +71,6 @@ public:
 
     sf::Vector2f getPosition() const;
     float getVerticalSpeed() const;
+    enum States getState() const;
     bool isDead() const;
 };
