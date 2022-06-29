@@ -4,6 +4,17 @@
 The objective is to go as deep as you can without dying because of fall damage.
 Constantly manage your falling speed to avoid going too fast and hurt yourself.
 
+You can grab walls to slow down your descent, but be careful, you will quickly get
+tired if you hold on for too long. Pay also attention to crackled stones, they 
+will break as soon as you land on them !
+
+
+# === Controls === #
+
+← → : Move left/right
+↑ : Jump
+SPACE : Grab walls
+ESC : Pause game
 
 # === Credits === #
 
