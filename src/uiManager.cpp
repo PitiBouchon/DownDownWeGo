@@ -14,6 +14,17 @@ UIManager::UIManager()
     debugText.setFillColor(debugColor);
 }
 
+void UIManager::Pause(sf::RenderWindow* window, const sf::View& cameraView, const float zoom)
+{
+    sf::View view = cameraView;
+    view.zoom(zoom);
+    window->setView(view);
+
+    uiText.setString("Pause\n");
+    uiText.setPosition(window->getView().getCenter().x - uiText.getLocalBounds().width / 2, window->getView().getCenter().y - uiText.getCharacterSize());
+    window->draw(uiText);
+}
+
 
 void UIManager::Draw(sf::RenderWindow * window, const sf::View& cameraView, const float zoom, const int score, const int fps, const std::string& gameInfo)
 {
@@ -47,13 +58,11 @@ void UIManager::GameOver(sf::RenderWindow* window, const sf::View& cameraView, c
     view.zoom(zoom);
     window->setView(view);
 
-    gameOverText = "Game Over\n";
-    uiText.setString(gameOverText);
+    uiText.setString("Game Over\n");
     uiText.setPosition(window->getView().getCenter().x - uiText.getLocalBounds().width / 2, window->getView().getCenter().y - uiText.getCharacterSize());
     window->draw(uiText);
 
-    gameOverText = "You traveled " + std::to_string(score) + " M";
-    uiText.setString(gameOverText);
+    uiText.setString("You traveled " + std::to_string(score) + " M");
     uiText.setPosition(window->getView().getCenter().x - uiText.getLocalBounds().width / 2, window->getView().getCenter().y + uiText.getCharacterSize());
     window->draw(uiText);
 }

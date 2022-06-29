@@ -54,6 +54,12 @@ void GameManager::UpdateScore() {
     score = depth;
 }
 
+
+void GameManager::DisplayPause()
+{
+    uiManager.Pause(window, camera.getView(), cameraZoom);
+}
+
 void GameManager::DisplayUI(float deltaTime)
 {
     fps = std::min(MAX_FPS, (int)(1 / deltaTime));
@@ -68,13 +74,15 @@ void GameManager::DisplayGameOver()
 
 void GameManager::Draw(float deltaTime)
 {
-    player.Animate(deltaTime);
+    if (!paused) player.Animate(deltaTime);
     window->draw(tmxManager);
     window->draw(player.getSprite());
 
-    if (!player.isDead()) DisplayUI(deltaTime);
+    if (paused) DisplayPause();
+    else if (!player.isDead()) DisplayUI(deltaTime);
     else DisplayGameOver();
 }
+
 
 void GameManager::HandleInput(sf::Event event)
 {

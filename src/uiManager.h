@@ -23,11 +23,10 @@ private:
 	const sf::Color debugColor = sf::Color::Red;
 	std::string debugFontPath = "resources/fonts/arial.ttf";
 
-	std::string gameOverText;
-
 public:
 	UIManager();
 
+	void Pause(sf::RenderWindow* window, const sf::View& cameraView, const float zoom);
 	void Draw(sf::RenderWindow* window, const sf::View& cameraView, const float zoom, const int score, const int fps, const std::string& gameInfo);
 	void GameOver(sf::RenderWindow* window, const sf::View& cameraView, const float zoom, const int score);
 };

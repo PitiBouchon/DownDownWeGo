@@ -49,9 +49,12 @@ public:
 
 	void Update();
 	void UpdateScore();
+
+	void DisplayPause();
 	void DisplayUI(float deltaTime);
 	void DisplayGameOver();
 	void Draw(float deltaTime);
+	
 	void HandleInput(sf::Event event);
 
 	void UpdateCamera(float deltaTime);
