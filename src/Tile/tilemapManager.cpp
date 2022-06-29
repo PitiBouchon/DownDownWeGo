@@ -7,7 +7,7 @@ int TilemapManager::randomMap(int currentZone)
 {
     int minValue = indexZones[currentZone];
     int maxValue = (currentZone == zones - 1) ? paths.size() - 1 : indexZones[currentZone + 1] - 1;
-    std::cout << minValue << " - " << maxValue << " / " << currentZone << std::endl;
+
     static std::random_device rd;
     static std::default_random_engine engine(rd());
     std::uniform_int_distribution<> distribution(minValue, maxValue);

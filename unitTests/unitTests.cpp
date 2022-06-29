@@ -34,7 +34,7 @@ TEST(TestPlayerState, PlayerCreate)
     GameManager gameManager(1, 60);
     Player player(0, 0, &world, "/resources/sprites/player_spritesheet.png", gameManager);
 
-    ASSERT_TRUE(States::IDLE, player.getState());
+    ASSERT_EQ(States::IDLE, player.getState());
 }
 
 TEST(TestPlayerState, PlayerJump)
@@ -49,5 +49,5 @@ TEST(TestPlayerState, PlayerJump)
     
     player.HandleInput(event);
 
-    ASSERT_TRUE(States::JUMP, player.getState());
+    ASSERT_EQ(States::JUMP, player.getState());
 }

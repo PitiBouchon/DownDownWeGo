@@ -21,8 +21,9 @@ using namespace sf;
 int main()
 {
     #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-    ShowWindow(GetConsoleWindow(), SW_HIDE);
+    ShowWindow(GetConsoleWindow(), SW_SHOW);
     #endif
+
     // ----- Game Manager ----- //
     GameManager gameManager(ZOOM, MAX_FPS);
     auto windowSize = sf::Vector2u(ZOOM * gameManager.getMapWidth(), 2 * ZOOM * gameManager.getMapHeight());

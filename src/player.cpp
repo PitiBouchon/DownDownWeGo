@@ -57,8 +57,6 @@ void Player::ChangeState(States newState)
 
     frame = 0;
     state = newState;
-
-    if (state == States::CLIMB) std::cout << "CLIMB" << std::endl;
 }
 
 void Player::RefillEndurance() {
@@ -70,7 +68,7 @@ void Player::Exhaust(float value) {
 }
 
 bool Player::LowEndurance() const {
-    return (endurance < MAX_ENDURANCE / 4);
+    return (endurance < MAX_ENDURANCE / 3);
 }
 
 bool Player::HasEndurance() const {
@@ -88,6 +86,13 @@ void Player::Jump()
     }
 }
 
+void Player::Fall()
+{
+    onGround = false;
+    if (LowEndurance()) ChangeState(States::FALL_LOW);
+    else ChangeState(States::FALL);
+}
+
 void Player::Land()
 {
     onGround = true;
@@ -97,6 +102,7 @@ void Player::Land()
     RefillEndurance();
     gameManager.UpdateScore();
 }
+
 
 void Player::HandleInput(sf::Event event)
 {
@@ -141,8 +147,7 @@ void Player::HandleKeyReleased(Command command)
     else if (command == Command::GRAB)
     {
         grabbing = false;
-        ChangeState(States::FALL);
-        onGround = false;
+        Fall();
     }
 }
 
@@ -162,20 +167,12 @@ void Player::Update(float distanceToCamera)
     {
         rb.setVelocity(b2Vec2(0, std::min(b2Velocity.y, GRAB_SPEED)));
         Exhaust(1.0f);
-        if (!HasEndurance() || !onWall)
-        {  
-            ChangeState(States::FALL);
-        }
+        if (!HasEndurance() || !onWall) Fall();
     }
     else
     {
         rb.setVelocity(b2Vec2(xInput * BASE_SPEED, b2Velocity.y));
-
-        if (b2Velocity.y != 0)
-        {
-            ChangeState(States::FALL);
-            onGround = false;
-        }
+        if (b2Velocity.y != 0) Fall();
     }
 
     if (distanceToCamera < 0) ChangeState(States::DEATH);
