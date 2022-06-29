@@ -12,6 +12,11 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/resources
                    COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/resources
                    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources ${CMAKE_CURRENT_BINARY_DIR}/resources)
 
+if(WIN32)
+   file(GLOB_RECURSE DYNAMIC_LIBS CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/lib_openal32/${ARCH}/*.dll)
+   file(COPY ${DYNAMIC_LIBS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+endif()
+
 add_dependencies(src copy-resources)
 
 target_include_directories(src PUBLIC Tile)

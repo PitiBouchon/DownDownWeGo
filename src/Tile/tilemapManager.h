@@ -14,8 +14,8 @@ private:
     int indexMapToChange = 0;
     
     std::vector<std::string> paths;
-    static const int zones = 3;
-    std::array<int, zones> indexZones = {0, 2, 10};
+    static const int zones = 4;
+    std::array<int, zones> indexZones = {0, 2, 10, 17};
     
     b2World *world;
 

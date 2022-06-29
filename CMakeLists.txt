@@ -122,3 +122,4 @@ include(CTest)
 #FetchContent_MakeAvailable(googletest)
 
 add_subdirectory(unitTests)
+target_link_libraries(unitTests sfml-graphics box2d sfml-audio)

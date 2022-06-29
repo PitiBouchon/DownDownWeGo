@@ -38,7 +38,7 @@ private:
 	int zone = 1;
 	int score = 0;
 	int depth = 0;
-	std::array<int, 4> zonesDepths = {0, 1, 200, 1000};
+	std::array<int, 4> zonesDepths = {0, 1, 600, 1500};
 
 public:
 	GameManager(float cameraZoom, int maxFps);
