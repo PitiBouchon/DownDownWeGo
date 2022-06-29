@@ -10,7 +10,7 @@ class GameManager;
 
 enum class Command { LEFT, RIGHT, JUMP, GRAB };
 
-enum class States { IDLE, WALK, CLIMB, JUMP, FALL, DEATH };
+enum class States { IDLE, WALK, CLIMB, CLIMB_LOW, JUMP, FALL, DEATH };
 enum class Direction { LEFT, RIGHT };
 
 
@@ -21,10 +21,10 @@ private:
     sf::Sprite sprite;
 
     int frame = 0;
-    std::array<int, 6> frames = { 4, 6, 4, 8, 4, 8 };
+    std::array<int, 7> frames = { 4, 6, 4, 4, 8, 4, 8 };
     float animationClock = 0;
 
-    const float MAX_ENDURANCE = 200;
+    const float MAX_ENDURANCE = 100;
     float endurance = MAX_ENDURANCE;
 
     const float LETHAL_SPEED = 35;
@@ -56,6 +56,7 @@ public:
 
     void RefillEndurance();
     void Exhaust(float value);
+    bool LowEndurance() const;
     bool HasEndurance() const;
 
     void Jump();

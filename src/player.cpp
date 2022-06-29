@@ -57,6 +57,8 @@ void Player::ChangeState(States newState)
 
     frame = 0;
     state = newState;
+
+    if (state == States::CLIMB) std::cout << "CLIMB" << std::endl;
 }
 
 void Player::RefillEndurance() {
@@ -65,6 +67,10 @@ void Player::RefillEndurance() {
 
 void Player::Exhaust(float value) {
     endurance -= value;
+}
+
+bool Player::LowEndurance() const {
+    return (endurance < MAX_ENDURANCE / 4);
 }
 
 bool Player::HasEndurance() const {
@@ -148,10 +154,11 @@ void Player::Update(float distanceToCamera)
     if (grabbing && HasEndurance() && onWall)
     {
         onGround = true;
-        ChangeState(States::CLIMB);
+        if (LowEndurance()) ChangeState(States::CLIMB_LOW);
+        else ChangeState(States::CLIMB);
     }
 
-    if (state == States::CLIMB)
+    if (state == States::CLIMB || state == States::CLIMB_LOW)
     {
         rb.setVelocity(b2Vec2(0, std::min(b2Velocity.y, GRAB_SPEED)));
         Exhaust(1.0f);

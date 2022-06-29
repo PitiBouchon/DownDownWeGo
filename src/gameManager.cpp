@@ -33,7 +33,9 @@ bool GameManager::isRunning() const
 
 int GameManager::GetZone()
 {
-    return depth * 0 + 1;
+    int currentZone = 0;
+    while (currentZone < zonesDepths.size() - 1 && depth > zonesDepths[currentZone + 1]) currentZone++;
+    return currentZone;
 }
 
 void GameManager::Update()

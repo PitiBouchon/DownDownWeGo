@@ -47,7 +47,7 @@ int main()
     if (!BGM.openFromFile("resources/music/trippin-ost.wav")) return -1;
     BGM.setLoop(true);
 
-    float volume = 100;
+    float volume = 0;
     BGM.setVolume(volume);
     BGM.play();
 
