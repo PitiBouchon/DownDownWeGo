@@ -87,7 +87,7 @@ int main()
 
 
         // ----- Game Update ----- //
-        gameManager.Update();
+        gameManager.Update(deltaTime);
         gameManager.Draw(deltaTime);
         window.display();
     }

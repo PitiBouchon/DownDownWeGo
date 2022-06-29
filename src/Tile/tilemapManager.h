@@ -22,7 +22,7 @@ private:
 public:
     TilemapManager(const std::string& maps_path, b2World *world);
     void draw(sf::RenderTarget& rt, sf::RenderStates states) const override;
-    void update(const Camera &camera, int zone);
+    void update(const Camera &camera, int zone, float delta_time);
 
     int randomMap(int zone);
 

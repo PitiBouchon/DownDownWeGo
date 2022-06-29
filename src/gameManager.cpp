@@ -1,12 +1,12 @@
 #include "gameManager.h"
 #include "myContactListener.h"
 
-const std::string absolutePath = "C:/Users/clemence/Documents/Travail/TSP/CSC4526_Cpp/Projet/DownDownWeGo/";
+//const std::string absolutePath = "C:/Users/clemence/Documents/Travail/TSP/CSC4526_Cpp/Projet/DownDownWeGo/";
 
 GameManager::GameManager(float cameraZoom, int maxFps) :
     timeStep(1.0f/maxFps),
     world(b2Vec2(0.0f, GRAVITY)),
-    tmxManager(absolutePath + "resources/maps/", &world),
+    tmxManager("resources/maps/", &world),
     player(tmxManager.getMapWidth() / 4, tmxManager.getMapHeight() / 2, &world, "resources/sprites/player_spritesheet.png"),
     cameraZoom(cameraZoom),
     MAX_FPS(maxFps)
@@ -38,7 +38,7 @@ int GameManager::GetZone()
     return score * 0 + 1;
 }
 
-void GameManager::Update()
+void GameManager::Update(float deltaTime)
 {
     if (isRunning())
     {
@@ -47,7 +47,7 @@ void GameManager::Update()
 
         world.Step(timeStep, velocityIterations, positionIterations);
         player.Update(camera.DistanceToPlayer());
-        tmxManager.update(camera, zone);
+        tmxManager.update(camera, zone, deltaTime);
     }
 }
 

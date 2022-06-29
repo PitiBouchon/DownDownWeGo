@@ -46,7 +46,7 @@ public:
 	bool isRunning() const;
 	int GetZone();
 
-	void Update();
+	void Update(float deltaTime);
 	void DisplayUI(float deltaTime);
 	void DisplayGameOver();
 	void Draw(float deltaTime);

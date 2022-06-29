@@ -19,7 +19,7 @@ private:
 public:
     Rigidbody() = default;
     Rigidbody(b2World *world, b2BodyType type, const b2Shape* shape, const sf::Vector2f pixelPos);
-    Rigidbody(b2World *world, b2BodyType type, const sf::Vector2f shapeSize, const sf::Vector2f pixelPos);
+    Rigidbody(b2World *world, b2BodyType type, const sf::Vector2f shapeSize, const sf::Vector2f pixelPos, bool player = false);
     
     sf::Vector2f getPixelPos() const;
     b2Vec2 getPhysicPos() const;
@@ -29,6 +29,8 @@ public:
     void setVelocity(const b2Vec2 &vel);
     void setCollisionDetection(CollisionDetection *cd);
     void addImpulse(b2Vec2 impulse);
+    void setEnabled(bool flag) {this->body->SetEnabled(flag);};
+    bool isEnabled() {return this->body->IsEnabled();};
 };
 
 
