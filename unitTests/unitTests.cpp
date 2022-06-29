@@ -7,7 +7,7 @@
 TEST(TestTilemap, TestCreate)
 {
     tmx::Map map;
-    bool loaded = map.load("../resources/maps/map1.tmx");
+    bool loaded = map.load("../src/resources/maps/map1.tmx");
     ASSERT_EQ(loaded, true);
 
     b2World world(b2Vec2(0, 10));
@@ -19,9 +19,8 @@ TEST(TestTilemapManager, TestMapSize)
 {
     b2World world(b2Vec2(0, 10));
 
-    TilemapManager tilemapManager("../resources/maps/", &world);
+    TilemapManager tilemapManager("../src/resources/maps/", &world);
 
     ASSERT_EQ(tilemapManager.getMapWidth(), 320);
     ASSERT_EQ(tilemapManager.getMapHeight(), 256);
 }
-
