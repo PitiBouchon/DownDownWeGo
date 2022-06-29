@@ -9,7 +9,7 @@
 TEST(TestTilemap, TestCreate)
 {
     tmx::Map map;
-    bool loaded = map.load("/resources/maps/map1.tmx");
+    bool loaded = map.load("../src/resources/maps/map1.tmx");
     ASSERT_EQ(loaded, true);
 
     b2World world(b2Vec2(0, 10));
@@ -21,7 +21,7 @@ TEST(TestTilemapManager, TestMapSize)
 {
     b2World world(b2Vec2(0, 10));
 
-    TilemapManager tilemapManager("/resources/maps/", &world);
+    TilemapManager tilemapManager("../src/resources/maps/", &world);
 
     ASSERT_EQ(tilemapManager.getMapWidth(), 320);
     ASSERT_EQ(tilemapManager.getMapHeight(), 256);
@@ -32,7 +32,7 @@ TEST(TestPlayerState, PlayerCreate)
 {
     b2World world(b2Vec2(0, 10));
     GameManager gameManager(1, 60);
-    Player player(0, 0, &world, "/resources/sprites/player_spritesheet.png", gameManager);
+    Player player(0, 0, &world, "../src/resources/sprites/player_spritesheet.png", gameManager);
 
     ASSERT_EQ(States::IDLE, player.getState());
 }
@@ -41,7 +41,7 @@ TEST(TestPlayerState, PlayerJump)
 {
     b2World world(b2Vec2(0, 10));
     GameManager gameManager(1, 60);
-    Player player(0, 0, &world, "/resources/sprites/player_spritesheet.png", gameManager);
+    Player player(0, 0, &world, "../src/resources/sprites/player_spritesheet.png", gameManager);
     
     sf::Event event;
     event.type = sf::Event::KeyPressed;

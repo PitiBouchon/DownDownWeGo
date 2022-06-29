@@ -180,7 +180,7 @@ void Player::Update(float distanceToCamera)
 
 void Player::BeginCollision(b2Contact *contact)
 {
-    if (contact->GetManifold()->localNormal.y >= 0)
+    if (contact->GetManifold()->localNormal.y != 0)
     {
         if (rb.getVelocity().y >= LETHAL_SPEED)
         {

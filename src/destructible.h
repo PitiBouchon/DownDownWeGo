@@ -7,7 +7,7 @@ class Destructible : public CollisionDetection {
 private:
     Rigidbody rb;
     bool to_delete = false;
-    float delete_cooldown = 0.1;
+    float delete_cooldown = 0.2f;
 
 public:
     int layer_index;
