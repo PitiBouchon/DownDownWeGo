@@ -21,7 +21,7 @@ using namespace sf;
 int main()
 {
     #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-    ShowWindow(GetConsoleWindow(), SW_SHOW);
+    ShowWindow(GetConsoleWindow(), SW_HIDE);
     #endif
 
     // ----- Game Manager ----- //
