@@ -18,7 +18,7 @@ Player::Player(float xpos, float ypos, b2World *world, const std::string& image)
 
     //Creating rigidbody
     auto rbSize = sf::Vector2f(0.5f * spriteSize, 0.9f * spriteSize);
-    rb = Rigidbody(world, b2_dynamicBody, rbSize, sprite.getPosition(), true);
+    rb = Rigidbody(world, b2_dynamicBody, rbSize, sprite.getPosition());
     rb.setCollisionDetection(this);
 }
 
@@ -172,10 +172,9 @@ void Player::Update(float distanceToCamera)
     if (distanceToCamera < 0) ChangeState(States::DEATH);
 }
 
-
 void Player::BeginCollision(b2Contact *contact)
 {
-    if (contact->GetManifold()->localNormal.y >= 0 && contact->GetManifold()->localNormal.y >= contact->GetManifold()->localNormal.x)
+    if (contact->GetManifold()->localNormal.y >= 0)
     {
         if (rb.getVelocity().y >= LETHAL_SPEED)
         {
@@ -184,7 +183,7 @@ void Player::BeginCollision(b2Contact *contact)
         else Land();
     }
 
-    if (contact->GetManifold()->localNormal.x != 0 && contact->GetManifold()->localNormal.x > contact->GetManifold()->localNormal.y)
+    if (contact->GetManifold()->localNormal.x != 0)
     {
         onWall = true;
     }
