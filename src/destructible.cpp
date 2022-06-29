@@ -5,8 +5,6 @@ Destructible::Destructible(b2World *world, b2BodyType type, const b2Shape* shape
 : layer_index(layer_index), tile_x(tile_x), tile_y(tile_y)
 {
     rb = Rigidbody(world, type, shape, pixelPos);
-    std::cout << "setCollisionDetection Destructible !" << std::endl;
-//    rb.setCollisionDetection(this);
 }
 
 void Destructible::setCollisionDetection() {
@@ -14,13 +12,11 @@ void Destructible::setCollisionDetection() {
 }
 
 void Destructible::BeginCollision(b2Contact *contact) {
-    std::cout << "Contact !" << std::endl;
     to_delete = true;
-    std::cout << "End BeginContact !" << std::endl;
 }
 
 void Destructible::EndCollision(b2Contact *contact) {
-    std::cout << "EndCollision !" << std::endl;
+
 }
 
 bool Destructible::update(float delta_time) {

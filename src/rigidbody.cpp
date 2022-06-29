@@ -34,7 +34,7 @@ Rigidbody::Rigidbody(b2World *world, b2BodyType type, const b2Shape* shape, cons
     SetBody(body, shape, pixelPos);
 }
 
-Rigidbody::Rigidbody(b2World* world, b2BodyType type, const sf::Vector2f shapeSize, const sf::Vector2f pixelPos, bool player)
+Rigidbody::Rigidbody(b2World* world, b2BodyType type, const sf::Vector2f shapeSize, const sf::Vector2f pixelPos)
 {
     b2BodyDef bodyDef;
     bodyDef.type = type;
@@ -43,24 +43,7 @@ Rigidbody::Rigidbody(b2World* world, b2BodyType type, const sf::Vector2f shapeSi
     dynamicBox.SetAsBox(toPhysic(shapeSize.x / 2), toPhysic(shapeSize.y / 2));
 
     body = world->CreateBody(&bodyDef);
-    if (player) {
-        b2CircleShape circle_shape;
-        circle_shape.m_radius = toPhysic(shapeSize.y / 2);
-
-        b2FixtureDef fixtureDef;
-        fixtureDef.shape = &circle_shape;
-        fixtureDef.density = 1.0f;
-        fixtureDef.friction = 0.0f;
-
-        body->CreateFixture(&fixtureDef);
-
-        body->SetTransform({ toPhysic(pixelPos.x), toPhysic(pixelPos.y) }, 0.0f);
-        body->SetFixedRotation(true);
-        body->SetLinearDamping(1.0f);
-    }
-    else {
-        SetBody(body, &dynamicBox, pixelPos);
-    }
+    SetBody(body, &dynamicBox, pixelPos);
 }
 
 sf::Vector2f Rigidbody::getPixelPos() const

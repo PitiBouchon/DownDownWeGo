@@ -18,7 +18,7 @@ Player::Player(float xpos, float ypos, b2World *world, const std::string& image)
 
     //Creating rigidbody
     auto rbSize = sf::Vector2f(0.5f * spriteSize, 0.9f * spriteSize);
-    rb = Rigidbody(world, b2_dynamicBody, rbSize, sprite.getPosition(), true);
+    rb = Rigidbody(world, b2_dynamicBody, rbSize, sprite.getPosition());
     rb.setCollisionDetection(this);
 }
 
