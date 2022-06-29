@@ -4,8 +4,9 @@
 #include <iostream>
 #include <fmt/core.h>
 #include "gameManager.h"
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 #include <WinUser.h>
-
+#endif
 
 // ----- GLOBAL PARAMETERS ----- //
 constexpr auto MAX_FPS = 60;
@@ -19,8 +20,9 @@ using namespace sf;
 
 int main()
 {
-    ShowWindow(GetConsoleWindow(), SW_SHOW);
-
+    #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+    ShowWindow(GetConsoleWindow(), SW_HIDE);
+    #endif
     // ----- Game Manager ----- //
     GameManager gameManager(ZOOM, MAX_FPS);
     auto windowSize = sf::Vector2u(ZOOM * gameManager.getMapWidth(), 2 * ZOOM * gameManager.getMapHeight());
