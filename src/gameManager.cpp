@@ -38,7 +38,7 @@ int GameManager::GetZone()
     return currentZone;
 }
 
-void GameManager::Update()
+void GameManager::Update(float deltaTime)
 {
     if (isRunning())
     {
@@ -49,7 +49,7 @@ void GameManager::Update()
         player.Update(camera.DistanceToPlayer());
     }
 
-    tmxManager.update(camera, zone);
+    tmxManager.update(camera, zone, deltaTime);
 }
 
 void GameManager::UpdateScore() {

@@ -48,7 +48,7 @@ public:
 	bool isRunning() const;
 	int GetZone();
 
-	void Update();
+	void Update(float deltaTime);
 	void UpdateScore();
 
 	void DisplayPause();

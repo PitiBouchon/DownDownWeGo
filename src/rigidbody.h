@@ -29,6 +29,8 @@ public:
     void setVelocity(const b2Vec2 &vel);
     void setCollisionDetection(CollisionDetection *cd);
     void addImpulse(b2Vec2 impulse);
+    void setEnabled(bool flag) {this->body->SetEnabled(flag);};
+    bool isEnabled() {return this->body->IsEnabled();};
 };
 
 

@@ -20,7 +20,7 @@ MyTilemap::MyTilemap(const tmx::Map &map, b2World *world, sf::Vector2f offset) {
             tile_layers.push_back(std::move(map_layer));
             
             //Adds a rigidbody for every tile placed in the "Collision" layer of the map
-            if (tile_layer.getName() == "Collision")
+            if (tile_layer.getName() == "Collision" || tile_layer.getName() == "Destructible")
             {
                 int counter = 0;
 
@@ -38,12 +38,22 @@ MyTilemap::MyTilemap(const tmx::Map &map, b2World *world, sf::Vector2f offset) {
                         shape.SetAsBox((float)tileSize.x / boxSizeFactor, (float)tileSize.y / boxSizeFactor);
 
                         auto pos = sf::Vector2f(tileSize.x * (x - 0.5f), tileSize.y * (y - 0.5f));
-                        auto rb = Rigidbody(world, b2_kinematicBody, &shape, pos + offset);
+                        if (tile_layer.getName() == "Destructible") {
+                            destructibles.push_back(Destructible(world, b2_kinematicBody, &shape, pos + offset, tile_layers.size() - 1, x, y));
+                        }
+                        else {
+                            auto rb = Rigidbody(world, b2_kinematicBody, &shape, pos + offset);
+                        }
                     }
                     counter++;
                 }
             }
         }
+    }
+
+    for (int i = 0; i < destructibles.size(); ++i) {
+        Destructible &d = destructibles.at(i);
+        d.setCollisionDetection();
     }
 }
 
@@ -73,3 +83,10 @@ void MyTilemap::draw(sf::RenderTarget &rt, sf::RenderStates states) const
     }
 }
 
+void MyTilemap::update(float delta_time) {
+    for (auto &dest : destructibles) {
+        if (dest.update(delta_time)) {
+            tile_layers.at(dest.layer_index)->setColor(dest.tile_x, dest.tile_y, sf::Color(0, 0, 0, 0));
+        }
+    }
+}

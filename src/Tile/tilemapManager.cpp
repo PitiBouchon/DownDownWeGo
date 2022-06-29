@@ -44,7 +44,7 @@ void TilemapManager::draw(sf::RenderTarget &rt, sf::RenderStates states) const
     }
 }
 
-void TilemapManager::update(const Camera &camera, int zone)
+void TilemapManager::update(const Camera &camera, int zone, float delta_time)
 {
     auto *mt = &displayedMaps[indexMapToChange];
 
@@ -72,6 +72,10 @@ void TilemapManager::update(const Camera &camera, int zone)
         indexMapToChange++;
         indexMapToChange %= displayedMaps.size();
         mt = &displayedMaps[indexMapToChange];
+    }
+
+    for (auto &tilemap : displayedMaps) {
+        tilemap.update(delta_time);
     }
 }
 

@@ -23,8 +23,8 @@ TEST(TestTilemapManager, TestMapSize)
 
     TilemapManager tilemapManager("/resources/maps/", &world);
 
-    EXPECT_EQ(tilemapManager.getMapWidth(), 320);
-    EXPECT_EQ(tilemapManager.getMapHeight(), 256);
+    ASSERT_EQ(tilemapManager.getMapWidth(), 320);
+    ASSERT_EQ(tilemapManager.getMapHeight(), 256);
 }
 
 
